@@ -1,0 +1,21 @@
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.tmp
+
+# Artefactos de compilação Arduino.
+build/
+*.elf
+*.hex
+*.bin
+
+# Documentos, media e arquivos não entram nesta versão.
+*.pdf
+*.ppt
+*.pptx
+*.doc
+*.docx
+*.mp4
+*.mov
+*.zip

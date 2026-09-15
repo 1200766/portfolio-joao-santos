@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CDSS — Administração</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-brand" href="#">
+    <div class="logo-mark">PE</div>
+    <div>
+      <span>PrediPE</span>
+      <small>CDSS · Administração</small>
+    </div>
+  </a>
+  <div class="navbar-right">
+    <div class="navbar-user">
+      <strong id="navName">—</strong>
+      Administrador
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">Sair</button>
+  </div>
+</nav>
+
+<div class="container" style="padding-top:48px;padding-bottom:48px;max-width:560px;">
+  <div class="page-header" style="border:none;margin-bottom:32px;">
+    <h1>Administração</h1>
+    <p style="margin-top:6px;">Gestão de médicos e pacientes via Supabase.</p>
+  </div>
+
+  <div class="card" style="display:flex;flex-direction:column;gap:20px;">
+    <div style="display:flex;align-items:flex-start;gap:16px;padding-bottom:20px;border-bottom:1px solid var(--border);">
+      <div style="width:44px;height:44px;background:#ecfdf5;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">🗄️</div>
+      <div>
+        <p style="font-weight:600;color:var(--navy);margin-bottom:4px;font-size:.95rem;">Supabase Dashboard</p>
+        <p style="font-size:.84rem;margin-bottom:12px;">Gestão completa de utilizadores, pacientes e dados clínicos directamente na base de dados.</p>
+        <a href="https://supabase.com/dashboard" target="_blank" class="btn btn-primary btn-sm">
+          Abrir Supabase →
+        </a>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:16px;">
+      <div style="width:44px;height:44px;background:#eff6ff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">🔬</div>
+      <div>
+        <p style="font-weight:600;color:var(--navy);margin-bottom:4px;font-size:.95rem;">Simulador LIS</p>
+        <p style="font-size:.84rem;margin-bottom:12px;">Enviar resultados laboratoriais de teste para uma gravidez específica.</p>
+        <a href="lab_simulator.html" class="btn btn-outline btn-sm">Abrir simulador</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function logout() { sessionStorage.clear(); window.location.href = "login.html"; }
+window.addEventListener("DOMContentLoaded", () => {
+  if (sessionStorage.getItem("role") !== "admin") {
+    window.location.href = "login.html";
+    return;
+  }
+  document.getElementById("navName").textContent = sessionStorage.getItem("userName") || "Admin";
+});
+</script>
+</body>
+</html>

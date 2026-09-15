@@ -1,0 +1,35 @@
+{
+  "contacts": [
+    {
+      "source_label": 1,
+      "target_label": 2,
+      "threshold_mm": 2.5
+    }
+  ],
+  "labels": [
+    {
+      "expected_components": 2,
+      "min_voxels": 5,
+      "name": "marcador_bilateral_sintetico",
+      "value": 1
+    },
+    {
+      "expected_components": 1,
+      "min_voxels": 5,
+      "name": "marcador_referencia_sintetico",
+      "value": 2
+    }
+  ],
+  "laterality": [
+    {
+      "axis": "x",
+      "coordinate_system": "LPS_sintetico_declarado",
+      "label": 1,
+      "midline_mm": 0.0,
+      "positive_side": "left",
+      "require_bilateral": true,
+      "tolerance_mm": 0.5
+    }
+  ],
+  "schema_version": 1
+}

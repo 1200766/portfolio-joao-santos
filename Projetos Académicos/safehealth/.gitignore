@@ -1,0 +1,13 @@
+.DS_Store
+__MACOSX/
+.env
+.env.*
+!.env.example
+firmware/config.h
+database/passwords.local.sql
+*.log
+tmp/
+build/
+__pycache__/
+*.py[cod]
+.pytest_cache/

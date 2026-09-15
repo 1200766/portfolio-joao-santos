@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CDSS Pré-eclâmpsia — Acesso</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .role-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .role-btn {
+      padding: 14px;
+      border: 2px solid var(--border-dark);
+      border-radius: var(--radius);
+      background: var(--white);
+      cursor: pointer;
+      text-align: center;
+      transition: all var(--transition);
+      font-family: var(--font-body);
+    }
+    .role-btn .role-icon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+    .role-btn .role-name { font-size: .85rem; font-weight: 500; color: var(--slate); }
+    .role-btn:hover { border-color: var(--blue-light); }
+    .role-btn.active {
+      border-color: var(--blue);
+      background: #eff6ff;
+    }
+    .role-btn.active .role-name { color: var(--blue); }
+  </style>
+</head>
+<body>
+
+<div class="auth-page">
+
+  <!-- Lado esquerdo — imagem/marca -->
+  <div class="auth-left">
+    <div style="margin-bottom: 48px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:40px;">
+        <div class="logo-mark">PE</div>
+        <div>
+          <span style="font-family:var(--font-display);color:white;font-size:1.1rem;font-weight:600;">PrediPE</span>
+          <small style="font-size:.65rem;color:var(--teal-light);text-transform:uppercase;letter-spacing:.08em;">CDSS · Pré-eclâmpsia</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="fade-up">
+      <p class="auth-tagline">
+        Previsão de risco<br/>
+        <em>inteligente</em><br/>
+        para cada gravidez.
+      </p>
+      <p class="auth-desc">
+        Sistema de apoio à decisão clínica baseado em XGBoost e valores SHAP
+        para estratificação dinâmica do risco de pré-eclâmpsia ao longo da gravidez.
+      </p>
+    </div>
+
+    <div class="auth-stats fade-up fade-up-delay-2">
+      <div>
+        <div class="auth-stat-value">XGBoost</div>
+        <div class="auth-stat-label">Motor preditivo</div>
+      </div>
+      <div>
+        <div class="auth-stat-value">SHAP</div>
+        <div class="auth-stat-label">Interpretabilidade</div>
+      </div>
+      <div>
+        <div class="auth-stat-value">HL7</div>
+        <div class="auth-stat-label">Interoperável</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lado direito — formulário -->
+  <div class="auth-right">
+    <div class="auth-form-box fade-up">
+
+      <h2>Bem-vindo</h2>
+      <p>Entre com as suas credenciais para aceder ao sistema.</p>
+
+      <!-- Selector de perfil -->
+      <div class="role-selector">
+        <button class="role-btn active" id="role-doctor" onclick="selectRole('doctor')">
+          <span class="role-icon">🩺</span>
+          <span class="role-name">Médico</span>
+        </button>
+        <button class="role-btn" id="role-admin" onclick="selectRole('admin')">
+          <span class="role-icon">⚙️</span>
+          <span class="role-name">Admin</span>
+        </button>
+      </div>
+
+      <!-- Alerta de erro -->
+      <div id="loginError" class="alert alert-error hidden" style="margin-bottom:16px;"></div>
+
+      <!-- Formulário -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="utilizador@example.invalid" autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Palavra-passe</label>
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+
+        <button class="btn btn-primary btn-lg" id="loginBtn" onclick="handleLogin()">
+          Entrar
+        </button>
+
+      </div>
+
+      <div class="divider" style="margin:24px 0;">Protótipo académico</div>
+
+      <p style="font-size:.78rem;text-align:center;color:var(--slate-light);line-height:1.6;">
+        Os dados processados por este sistema são pseudonimizados.<br/>
+        Acesso restrito a profissionais autorizados.
+      </p>
+      <p style="font-size:.78rem;text-align:center;margin-top:12px;">
+        <a href="lab_simulator.html" style="color:var(--teal);">Simulador de laboratório (LIS)</a>
+      </p>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "http://127.0.0.1:8000";
+let selectedRole = "doctor";
+
+function selectRole(role) {
+  selectedRole = role;
+  document.querySelectorAll(".role-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("role-" + role).classList.add("active");
+}
+
+async function handleLogin() {
+  const email    = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const btn      = document.getElementById("loginBtn");
+  const errBox   = document.getElementById("loginError");
+
+  errBox.classList.add("hidden");
+
+  if (!email || !password) {
+    showError("Preencha o email e a palavra-passe.");
+    return;
+  }
+
+  // Loading
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> A autenticar...';
+
+  try {
+    const res  = await fetch(`${API}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, role: selectedRole })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      showError(data.detail ?? "Credenciais inválidas.");
+      return;
+    }
+
+    // Guarda sessão
+    sessionStorage.setItem("token",     data.access_token);
+    sessionStorage.setItem("role",      data.role);
+    sessionStorage.setItem("userName",  data.name);
+    sessionStorage.setItem("userId",    data.id);
+    sessionStorage.setItem("userEmail", email); // necessário para confirmação de password (Caso D)
+
+    if (data.role === "doctor") {
+      window.location.href = "dashboard_doctor.html";
+    } else if (data.role === "admin") {
+      window.location.href = "dashboard_admin.html";
+    } else {
+      showError("Perfil não suportado nesta aplicação.");
+    }
+
+  } catch (e) {
+    showError("Não foi possível ligar ao servidor.");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = "Entrar";
+  }
+}
+
+function showError(msg) {
+  const errBox = document.getElementById("loginError");
+  errBox.textContent = msg;
+  errBox.classList.remove("hidden");
+}
+
+// Enter para submeter
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter") handleLogin();
+});
+</script>
+
+</body>
+</html>

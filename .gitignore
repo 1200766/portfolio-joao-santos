@@ -43,3 +43,14 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# nested project workspaces and generated files
+**/node_modules/
+**/.next/
+**/.vinext/
+**/.wrangler/
+**/.venv/
+**/venv/
+**/__pycache__/
+**/.pytest_cache/
+**/*.py[cod]

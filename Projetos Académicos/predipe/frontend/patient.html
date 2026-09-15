@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CDSS — Ficha da Paciente</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    .patient-header-card {
+      background: var(--navy);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      color: white;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .patient-meta { display: flex; gap: 32px; margin-top: 12px; }
+    .patient-meta-item label {
+      font-size: .7rem; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--slate-light);
+      display: block; margin-bottom: 2px;
+    }
+    .patient-meta-item span { color: white; font-size: .95rem; font-weight: 500; }
+
+    .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 24px; }
+    .tab-btn {
+      padding: 10px 20px;
+      border: none; background: none;
+      font-family: var(--font-body); font-size: .9rem;
+      color: var(--slate); cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px; transition: all var(--transition);
+    }
+    .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+    .tab-btn:hover:not(.active) { color: var(--navy); }
+
+    .pregnancy-card {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .pregnancy-card-header {
+      background: #f8faff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .pregnancy-card-header:hover { background: #eff6ff; }
+    .pregnancy-card-body { padding: 20px; border-top: 1px solid var(--border); }
+
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(15,31,61,.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; backdrop-filter: blur(4px);
+    }
+    .modal {
+      background: var(--white); border-radius: var(--radius-lg);
+      padding: 32px; width: 100%; max-width: 520px;
+      box-shadow: var(--shadow-lg); animation: fadeUp .25s ease;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal h2 { margin-bottom: 20px; }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+    .history-select-row { margin-bottom: 20px; }
+    .history-select-row label {
+      display: block; font-size: .78rem; font-weight: 600;
+      color: var(--slate); margin-bottom: 6px;
+    }
+    .history-select-row select {
+      width: 100%; max-width: 420px;
+      padding: 10px 12px; border: 1.5px solid var(--border);
+      border-radius: var(--radius); font-family: var(--font-body);
+      font-size: .9rem; color: var(--navy); background: var(--white);
+    }
+    .risk-chart-wrap {
+      position: relative; height: 280px; margin-top: 8px;
+    }
+    .risk-zones-legend {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      margin-top: 12px; font-size: .78rem; color: var(--slate);
+    }
+    .risk-zones-legend span::before {
+      content: ""; display: inline-block;
+      width: 10px; height: 10px; border-radius: 2px;
+      margin-right: 5px; vertical-align: middle;
+    }
+    .legend-baixo::before   { background: var(--risk-low); }
+    .legend-moderado::before{ background: var(--risk-mid); }
+    .legend-alto::before    { background: var(--risk-high); }
+
+    .clinical-banner {
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      font-size: .88rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .clinical-banner.warning { background: var(--risk-mid-bg); border: 1px solid #fcd34d; color: #92400e; }
+    .clinical-banner.info { background: #eff6ff; border: 1px solid #93c5fd; color: #1e40af; }
+    .lab-panel-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .lab-panel-table th, .lab-panel-table td {
+      padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border);
+    }
+    .lab-stale { color: var(--slate-light); }
+    .badge-stale {
+      font-size: .7rem; background: var(--border); color: var(--slate);
+      padding: 2px 8px; border-radius: 99px; margin-left: 6px;
+    }
+    .badge-lab {
+      font-size: .7rem; background: #e0f2fe; color: #0369a1;
+      padding: 2px 8px; border-radius: 99px;
+    }
+
+    .current-risk-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--blue);
+      background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+    }
+    .current-risk-card .cr-label {
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--blue);
+      font-weight: 600;
+    }
+    .current-risk-card .cr-week {
+      font-size: .82rem;
+      color: var(--slate);
+      margin-top: 4px;
+    }
+
+    .assessment-acc {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 10px;
+      background: var(--white);
+    }
+    .assessment-acc-header {
+      display: grid;
+      grid-template-columns: 72px 1fr auto 28px;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .assessment-acc-header:hover { background: #f8faff; }
+    .assessment-acc-body {
+      padding: 14px 16px 16px 88px;
+      border-top: 1px solid var(--border);
+      background: #fafbfc;
+    }
+    .assessment-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 20px;
+      font-size: .82rem;
+    }
+    .assessment-detail-grid dt { color: var(--slate-light); font-weight: 500; }
+    .assessment-detail-grid dd { color: var(--navy); margin: 0 0 8px; font-weight: 500; }
+    .acc-chevron {
+      color: var(--slate-light);
+      transition: transform .2s ease;
+      text-align: center;
+    }
+    .assessment-acc.open .acc-chevron { transform: rotate(180deg); }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a class="navbar-brand" href="dashboard_doctor.html">
+    <div class="logo-mark">PE</div>
+    <div>
+      <span>PrediPE</span>
+      <small>CDSS · Pré-eclâmpsia</small>
+    </div>
+  </a>
+  <div class="navbar-right">
+    <div class="navbar-user">
+      <strong id="navName">—</strong>
+      Médico
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">Sair</button>
+  </div>
+</nav>
+
+<div class="container" style="padding-top:28px;padding-bottom:48px;">
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb fade-up" style="margin-bottom:16px;">
+    <a href="dashboard_doctor.html">← Os meus pacientes</a>
+    &nbsp;/&nbsp; Ficha da paciente
+  </div>
+
+  <!-- Header da paciente -->
+  <div class="patient-header-card fade-up">
+    <div>
+      <p style="font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-light);margin-bottom:6px;">Paciente</p>
+      <h1 style="color:white;font-size:1.8rem;" id="headerCode">—</h1>
+      <p style="font-size:.78rem;color:var(--teal-light);margin-top:4px;font-family:var(--font-mono);" id="headerCodeSub"></p>
+      <div class="patient-meta">
+        <div class="patient-meta-item">
+          <label>Idade</label>
+          <span id="headerAge">—</span>
+        </div>
+        <div class="patient-meta-item">
+          <label>Paridade</label>
+          <span id="headerParity">—</span>
+        </div>
+        <div class="patient-meta-item">
+          <label>Registada em</label>
+          <span id="headerCreated">—</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+      <button class="btn btn-teal" onclick="openPregnancyModal()">+ Nova gravidez</button>
+    </div>
+  </div>
+
+  <!-- Alerta -->
+  <div id="pageAlert" class="alert hidden" style="margin-bottom:16px;"></div>
+
+  <div id="clinicalAlerts"></div>
+
+  <div id="labPanelCard" class="card" style="margin-bottom:20px;">
+    <h3 style="margin-bottom:4px;font-size:1rem;">Análises recentes (laboratório)</h3>
+    <p style="font-size:.8rem;color:var(--slate-light);margin-bottom:12px;">
+      Dados recebidos do LIS/FHIR — o médico não edita estes valores na ficha.
+    </p>
+    <table class="lab-panel-table">
+      <thead>
+        <tr>
+          <th>Marcador</th>
+          <th>Valor</th>
+          <th>Semana</th>
+          <th>Data</th>
+          <th>Origem</th>
+        </tr>
+      </thead>
+      <tbody id="labPanelBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('pregnancies')">Gravidezes</button>
+    <button class="tab-btn" onclick="switchTab('history')">Histórico de risco</button>
+  </div>
+
+  <!-- Tab: gravidezes -->
+  <div id="tab-pregnancies">
+    <div id="pregnanciesList">
+      <p style="color:var(--slate-light);padding:24px 0;">A carregar...</p>
+    </div>
+  </div>
+
+  <!-- Tab: histórico de risco -->
+  <div id="tab-history" class="hidden">
+    <div class="card" style="margin-bottom:16px;">
+      <div class="history-select-row">
+        <label for="historyPregnancySelect">Gravidez</label>
+        <select id="historyPregnancySelect" onchange="onHistoryPregnancyChange()">
+          <option value="">— Seleccione uma gravidez —</option>
+        </select>
+      </div>
+      <p id="historyEmptyMsg" class="hidden" style="color:var(--slate-light);">
+        Nenhuma gravidez registada.
+      </p>
+    </div>
+
+    <div id="riskChartSection" class="card hidden" style="margin-bottom:16px;">
+      <h3 style="margin-bottom:8px;">Evolução do risco</h3>
+      <p style="font-size:.82rem;color:var(--slate-light);margin-bottom:12px;">
+        Probabilidade de pré-eclâmpsia ao longo das semanas gestacionais
+      </p>
+      <div class="risk-chart-wrap">
+        <canvas id="riskChart"></canvas>
+      </div>
+      <div class="risk-zones-legend">
+        <span class="legend-baixo">Baixo (&lt;20%)</span>
+        <span class="legend-moderado">Moderado (20–50%)</span>
+        <span class="legend-alto">Alto (&gt;50%)</span>
+      </div>
+      <p id="riskChartNoData" class="hidden" style="color:var(--slate-light);margin-top:16px;font-size:.85rem;">
+        Ainda não existem avaliações com risco calculado para esta gravidez.
+      </p>
+    </div>
+
+    <div id="historyAssessmentsSection" class="card hidden">
+      <h3 style="margin-bottom:16px;">Avaliações</h3>
+      <div id="historyAssessments"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal: nova gravidez -->
+<div class="modal-overlay hidden" id="pregnancyModal">
+  <div class="modal">
+    <h2>Registar nova gravidez</h2>
+    <div id="pregnancyModalAlert" class="alert alert-error hidden" style="margin-bottom:16px;"></div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="form-group">
+        <label>IMC no início da gravidez</label>
+        <input type="number" id="f_bmi" step="0.1" min="12" max="70" placeholder="ex: 24.5" />
+      </div>
+      <div class="form-group">
+        <label>Data de início</label>
+        <input type="date" id="f_started_at" />
+      </div>
+    </div>
+    <p style="font-size:.78rem;margin-top:12px;color:var(--slate-light);">
+      Os antecedentes de pré-eclâmpsia e nefropatia são calculados automaticamente
+      com base nas gravidezes anteriores registadas no sistema.
+    </p>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closePregnancyModal()">Cancelar</button>
+      <button class="btn btn-primary" id="savePregnancyBtn" onclick="savePregnancy()">Registar gravidez</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "http://127.0.0.1:8000";
+let currentPatientId = sessionStorage.getItem("currentPatientId");
+let currentPatient   = null;
+let pregnanciesCache = [];
+let pregnanciesById  = {};
+let riskChart        = null;
+// Cache do timeline por pregnancy: { [assessmentId]: weekEntry }
+let historyTimelineCache = {};
+
+function getToken() { return sessionStorage.getItem("token"); }
+function logout() { sessionStorage.clear(); window.location.href = "login.html"; }
+
+// ── Init ──
+window.addEventListener("DOMContentLoaded", () => {
+  const name = sessionStorage.getItem("userName");
+  if (!name || sessionStorage.getItem("role") !== "doctor" || !currentPatientId) {
+    window.location.href = "login.html";
+    return;
+  }
+  document.getElementById("navName").textContent = name;
+  loadPatient();
+});
+
+async function loadPatient() {
+  try {
+    const res  = await fetch(`${API}/patients/${currentPatientId}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    currentPatient = await res.json();
+    renderPatientHeader(currentPatient);
+    loadPregnancies();
+  } catch (e) {
+    showPageAlert("Erro ao carregar dados da paciente.");
+  }
+}
+
+function renderPatientHeader(p) {
+  const displayName = p.full_name || p.patient_code;
+  document.getElementById("headerCode").textContent    = displayName;
+  document.getElementById("headerCodeSub").textContent = p.full_name ? p.patient_code : "";
+  document.getElementById("headerAge").textContent     = p.maternal_age ? `${p.maternal_age} anos` : "—";
+  document.getElementById("headerParity").textContent  = p.parity ?? "—";
+  document.getElementById("headerCreated").textContent = formatDate(p.created_at);
+  document.title = `CDSS — ${displayName}`;
+  sessionStorage.setItem("currentPatientCode", displayName);
+}
+
+// ── Gravidezes ──
+async function loadPregnancies() {
+  try {
+    const res  = await fetch(`${API}/pregnancies/${currentPatientId}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    pregnanciesCache = data;
+    pregnanciesById = Object.fromEntries(data.map(p => [p.id, p]));
+    renderPregnancies(data);
+    populateHistorySelect(data);
+    loadClinicalPanels(data);
+  } catch (e) {
+    showPageAlert("Erro ao carregar gravidezes.");
+  }
+}
+
+function renderPregnancies(pregnancies) {
+  const container = document.getElementById("pregnanciesList");
+  if (pregnancies.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:48px;color:var(--slate-light);">
+        <div style="font-size:2.5rem;margin-bottom:12px;">🤱</div>
+        <p>Nenhuma gravidez registada. Clique em <strong>Nova gravidez</strong> para começar.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = pregnancies.map((preg, i) => `
+    <div class="pregnancy-card fade-up">
+      <div class="pregnancy-card-header" onclick="togglePregnancy('preg-${preg.id}')">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="font-family:var(--font-display);font-size:1.4rem;color:var(--navy);">
+            Gravidez ${preg.pregnancy_number ?? (i + 1)}
+          </div>
+          <div style="font-size:.82rem;color:var(--slate);">
+            Início: ${formatDate(preg.started_at)}
+            ${preg.ended_at ? ` · Fim: ${formatDate(preg.ended_at)}` : " · <em>Em curso</em>"}
+          </div>
+          ${preg.pe_outcome ? '<span class="badge badge-alto">PE confirmada</span>' : ''}
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="btn btn-primary btn-sm"
+            onclick="event.stopPropagation();newAssessment('${preg.id}')">
+            + Nova avaliação
+          </button>
+          <span style="color:var(--slate-light);">▾</span>
+        </div>
+      </div>
+
+      <div id="preg-${preg.id}" class="pregnancy-card-body hidden">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div class="stat-card">
+            <div class="stat-value">${preg.bmi ?? "—"}</div>
+            <div class="stat-label">IMC inicial</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${preg.prior_pe ? "Sim" : "Não"}</div>
+            <div class="stat-label">PE anterior</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${preg.prior_nephropathy_or_proteinuria ? "Sim" : "Não"}</div>
+            <div class="stat-label">Nefropatia prévia</div>
+          </div>
+        </div>
+
+        <p style="font-size:.72rem;color:var(--slate-light);margin-bottom:12px;">
+          ID gravidez (simulador LIS): <code style="font-size:.7rem;">${preg.id}</code>
+          · <a href="lab_simulator.html" target="_blank" style="color:var(--blue);">enviar análises</a>
+        </p>
+        <h3 style="margin-bottom:12px;font-size:.9rem;color:var(--slate);">Avaliações</h3>
+        <div id="assessments-${preg.id}">
+          <p style="color:var(--slate-light);font-size:.85rem;">A carregar...</p>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  // Abre automaticamente a primeira gravidez
+  if (pregnancies.length > 0) {
+    togglePregnancy(`preg-${pregnancies[0].id}`);
+  }
+}
+
+async function togglePregnancy(id) {
+  const body = document.getElementById(id);
+  if (body.classList.contains("hidden")) {
+    body.classList.remove("hidden");
+    const pregnancyId = id.replace("preg-", "");
+    loadAssessments(pregnancyId);
+  } else {
+    body.classList.add("hidden");
+  }
+}
+
+// ── Avaliações ──
+async function loadAssessments(pregnancyId) {
+  const container = document.getElementById(`assessments-${pregnancyId}`);
+  const preg = pregnanciesById[pregnancyId];
+  const isInCourse = preg && !preg.ended_at;
+  try {
+    const res = await fetch(`${API}/assessments/${pregnancyId}/timeline`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const timeline = await res.json();
+    // Popula cache para o dropdown de histórico
+    historyTimelineCache = {};
+    timeline.forEach(entry => { historyTimelineCache[entry.id] = entry; });
+    renderAssessmentsTimeline(container, timeline, pregnancyId, isInCourse);
+  } catch (e) {
+    container.innerHTML = `<p style="color:var(--risk-high);font-size:.85rem;">Erro ao carregar avaliações.</p>`;
+  }
+}
+
+const TRIGGER_LABELS = {
+  clinician: "consulta",
+  lab_arrival: "chegada lab",
+  recalc_request: "recálculo",
+  partial_auto: "parcial auto",
+};
+const DIABETES_PT = {
+  none: "Sem diabetes", type1: "Tipo 1", type2: "Tipo 2", gestational: "Gestacional",
+};
+
+function sortAssessmentsList(list) {
+  return [...list].sort((a, b) => {
+    if (b.gestational_week !== a.gestational_week) {
+      return b.gestational_week - a.gestational_week;
+    }
+    return new Date(b.computed_at || b.created_at) - new Date(a.computed_at || a.created_at);
+  });
+}
+
+function getLatestAssessment(assessments) {
+  if (!assessments.length) return null;
+  return [...assessments].sort(
+    (a, b) => new Date(b.computed_at || b.created_at) - new Date(a.computed_at || a.created_at)
+  )[0];
+}
+
+function toggleAssessmentDetail(accId) {
+  const wrap = document.getElementById(accId);
+  const body = document.getElementById(`${accId}-body`);
+  if (!wrap || !body) return;
+  body.classList.toggle("hidden");
+  wrap.classList.toggle("open");
+}
+
+function assessmentDetailHtml(a) {
+  const trigger = TRIGGER_LABELS[a.triggered_by] || a.triggered_by || "—";
+  const when    = formatDateTime(a.computed_at || a.created_at);
+  const missing = a.missing_fields?.missing_essential_parameters || [];
+  const missingLabels = { map:"MAP", uta_pi:"UtA-PI", plgf:"PlGF", sflt1_plgf_ratio:"sFlt-1/PlGF" };
+  const missingPT = missing.map(f => missingLabels[f] || f);
+
+  // ── Chips em grid 4 colunas ──
+  const chips = [
+    { label:"SBP / DBP",    val: (a.sbp && a.dbp) ? `${a.sbp} / ${a.dbp} mmHg` : null },
+    { label:"MAP",          val: a.map  != null ? `${a.map} mmHg` : null },
+    { label:"UtA-PI",       val: a.uta_pi != null ? `${a.uta_pi}` : null },
+    { label:"PlGF",         val: a.plgf  != null ? `${a.plgf} pg/mL` : null },
+    { label:"sFlt-1/PlGF",  val: a.sflt1_plgf_ratio != null ? `${a.sflt1_plgf_ratio}` : null },
+    { label:"Diabetes",     val: (a.diabetes && a.diabetes !== "none") ? (DIABETES_PT[a.diabetes] ?? a.diabetes) : null },
+    { label:"HTA crónica",  val: a.chronic_hypertension ? "Sim" : null },
+    { label:"Origem",       val: `${trigger}` },
+    { label:"Data cálculo", val: when },
+  ].filter(c => c.val);
+
+  const chipsHtml = `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;">
+      ${chips.map(c => `
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 12px;">
+          <p style="font-size:.67rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--slate-light);margin-bottom:3px;">${c.label}</p>
+          <p style="font-size:.84rem;font-weight:600;color:var(--navy);line-height:1.2;">${c.val}</p>
+        </div>`).join("")}
+    </div>`;
+
+  // ── Aviso de dados em falta ──
+  const missingHtml = missingPT.length ? `
+    <div style="background:var(--risk-mid-bg);border-left:3px solid var(--risk-mid);border-radius:0 var(--radius) var(--radius) 0;padding:7px 12px;margin-bottom:12px;">
+      <p style="font-size:.78rem;color:#92400e;">Dados em falta: <strong>${missingPT.join(", ")}</strong> — confiança da previsão reduzida.</p>
+    </div>` : "";
+
+  // ── Recomendação ──
+  const actionHtml = a.suggested_action ? `
+    <div style="background:var(--white);border-left:3px solid var(--blue);border-radius:0 var(--radius) var(--radius) 0;padding:8px 12px;margin-bottom:14px;">
+      <p style="font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--blue);margin-bottom:3px;">Recomendação clínica</p>
+      <p style="font-size:.82rem;color:var(--navy);line-height:1.5;">${a.suggested_action}</p>
+    </div>` : "";
+
+  // ── Gráfico SHAP ──
+  const shap = a.shap_values || {};
+  const shapLabels = {
+    map:"MAP", uta_pi:"UtA-PI", plgf:"PlGF", sflt1_plgf_ratio:"sFlt-1/PlGF",
+    sbp:"Pressão sistólica", dbp:"Pressão diastólica", maternal_age:"Idade materna",
+    parity:"Paridade", previous_pe:"PE anterior", bmi:"IMC",
+    diabetes:"Diabetes", chronic_hypertension:"Hipertensão crónica",
+    prior_nephropathy_or_proteinuria:"Nefropatia/proteinúria prévia",
+  };
+  const shapEntries = Object.entries(shap)
+    .filter(([,v]) => v > 0)
+    .sort(([,a],[,b]) => b - a)
+    .slice(0, 5);
+  const maxShap = Math.max(...shapEntries.map(([,v]) => v), 0.001);
+
+  const shapHtml = shapEntries.length ? `
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;">
+      <p style="font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);margin-bottom:12px;">
+        Factores que mais contribuíram para este risco
+      </p>
+      ${shapEntries.map(([k, v]) => {
+        const pct = ((v / maxShap) * 100).toFixed(1);
+        const col = v > maxShap * 0.65 ? "var(--risk-high)" : v > maxShap * 0.35 ? "var(--risk-mid)" : "var(--blue-light)";
+        return `
+          <div style="display:grid;grid-template-columns:140px 1fr 44px;align-items:center;gap:10px;margin-bottom:8px;">
+            <span style="font-size:.78rem;color:var(--slate);line-height:1.3;">${shapLabels[k] || k}</span>
+            <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+              <div style="width:${pct}%;height:100%;background:${col};border-radius:4px;"></div>
+            </div>
+            <span style="font-family:var(--font-mono);font-size:.72rem;color:var(--slate-light);text-align:right;">${v.toFixed(3)}</span>
+          </div>`;
+      }).join("")}
+      <p style="font-size:.68rem;color:var(--slate-light);margin-top:6px;">Valores SHAP — barra mais longa indica maior contribuição positiva para o risco.</p>
+    </div>` : "";
+
+  return `${chipsHtml}${missingHtml}${actionHtml}${shapHtml}`;
+}
+
+function fmt(v) {
+  if (v === null || v === undefined || v === "") return "—";
+  return v;
+}
+
+function formatDateTime(iso) {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleString("pt-PT", {
+    day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
+  });
+}
+
+function renderAssessmentsTimeline(container, timeline, pregnancyId, isInCourse) {
+  if (!timeline.length) {
+    container.innerHTML = `<p style="color:var(--slate-light);font-size:.85rem;">Sem avaliações. Clique em <strong>+ Nova avaliação</strong>.</p>`;
+    return;
+  }
+
+  // Ordenar semanas descendentes (mais recente primeiro)
+  const sorted = [...timeline].sort((a, b) => b.gestational_week - a.gestational_week);
+  const latest = sorted[0];
+
+  let html = '<div class="assessment-timeline">';
+
+  if (isInCourse && latest?.risk_level) {
+    html += `
+      <div class="current-risk-card">
+        <div>
+          <div class="cr-label">Risco actual</div>
+          <div class="cr-week">Semana ${latest.gestational_week} · ${formatDateTime(latest.computed_at || latest.created_at)}</div>
+        </div>
+        <span class="badge badge-${latest.risk_level}" style="font-size:1rem;padding:8px 14px;">
+          ${riskEmoji(latest.risk_level)} ${latest.risk_level} · ${(latest.risk_probability * 100).toFixed(1)}%
+        </span>
+      </div>`;
+  }
+
+  html += sorted.map(weekEntry => {
+    const a = weekEntry; // snapshot mais recente da semana
+    const history = weekEntry.history || [];
+    const accId = `assess-acc-${a.id}`;
+    const triggerLabel = TRIGGER_LABELS[a.triggered_by] || a.triggered_by || "—";
+
+    const historyDropdown = history.length > 0 ? `
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <label style="font-size:.72rem;font-weight:600;color:var(--slate);text-transform:uppercase;letter-spacing:.05em;">
+          Histórico desta semana (${history.length + 1} versões)
+        </label>
+        <select onchange="showHistoryVersion(this, '${a.id}')"
+          style="margin-top:6px;width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:.82rem;color:var(--navy);">
+          <option value="">Versão actual — ${formatDateTime(a.computed_at)} · ${triggerLabel}</option>
+          ${history.map((h, i) => `
+            <option value="${i}">${formatDateTime(h.computed_at)} · ${TRIGGER_LABELS[h.triggered_by] || h.triggered_by || "—"} · ${h.risk_level} ${h.risk_probability != null ? "(" + (h.risk_probability * 100).toFixed(1) + "%)" : ""}</option>
+          `).join("")}
+        </select>
+        <div id="history-detail-${a.id}" style="margin-top:10px;"></div>
+      </div>` : "";
+
+    return `
+      <div class="assessment-acc" id="${accId}">
+        <div class="assessment-acc-header" onclick="toggleAssessmentDetail('${accId}')">
+          <div class="assessment-week">
+            ${a.gestational_week}
+            <small>semanas</small>
+          </div>
+          <div>
+            <div style="font-size:.85rem;color:var(--slate);">
+              MAP <strong>${fmt(a.map)}</strong> · UtA-PI <strong>${fmt(a.uta_pi)}</strong> · PlGF <strong>${fmt(a.plgf)}</strong>
+            </div>
+            <div style="font-size:.78rem;color:var(--slate-light);margin-top:2px;">
+              ${formatDateTime(a.computed_at || a.created_at)} · <em>${triggerLabel}</em>
+              ${weekEntry.version_count > 1 ? `<span style="font-size:.7rem;background:#e0f2fe;color:#0369a1;padding:1px 7px;border-radius:99px;margin-left:6px;">${weekEntry.version_count} versões</span>` : ""}
+            </div>
+          </div>
+          <div>
+            ${a.risk_level
+              ? `<span class="badge badge-${a.risk_level}">${riskEmoji(a.risk_level)} ${(a.risk_probability * 100).toFixed(1)}%</span>`
+              : '<span class="badge badge-neutral">—</span>'}
+          </div>
+          <span class="acc-chevron">▾</span>
+        </div>
+        <div id="${accId}-body" class="assessment-acc-body hidden">
+          ${assessmentDetailHtml(a)}
+          ${historyDropdown}
+        </div>
+      </div>`;
+  }).join("");
+
+  html += "</div>";
+  container.innerHTML = html;
+}
+
+// Mostra detalhes de uma versão histórica no dropdown
+function showHistoryVersion(select, currentId) {
+  const detailEl = document.getElementById(`history-detail-${currentId}`);
+  if (!detailEl) return;
+  if (!select.value) {
+    detailEl.innerHTML = "";
+    return;
+  }
+  // A versão histórica está no data-history do elemento pai — buscamo-la via o timeline cacheado
+  const idx = parseInt(select.value);
+  const weekEntry = historyTimelineCache[currentId];
+  if (!weekEntry) return;
+  const h = weekEntry.history[idx];
+  if (!h) return;
+  detailEl.innerHTML = `
+    <div style="background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;">
+      <p style="font-size:.72rem;font-weight:600;color:var(--slate);text-transform:uppercase;margin-bottom:8px;">
+        Versão anterior — ${formatDateTime(h.computed_at)}
+      </p>
+      ${assessmentDetailHtml(h)}
+    </div>`;
+}
+
+// ── Nova avaliação ──
+function newAssessment(pregnancyId) {
+  sessionStorage.setItem("currentPregnancyId", pregnancyId);
+  if (currentPatient?.patient_code) {
+    sessionStorage.setItem("currentPatientCode", currentPatient.patient_code);
+  }
+  window.location.href = "assessment.html";
+}
+
+// ── Modal gravidez ──
+function openPregnancyModal() {
+  document.getElementById("pregnancyModal").classList.remove("hidden");
+}
+function closePregnancyModal() {
+  document.getElementById("pregnancyModal").classList.add("hidden");
+}
+
+async function savePregnancy() {
+  const btn        = document.getElementById("savePregnancyBtn");
+  const bmi        = parseFloat(document.getElementById("f_bmi").value);
+  const started_at = document.getElementById("f_started_at").value;
+
+  if (!bmi || !started_at) {
+    document.getElementById("pregnancyModalAlert").textContent = "Preencha o IMC e a data de início.";
+    document.getElementById("pregnancyModalAlert").classList.remove("hidden");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> A guardar...';
+
+  try {
+    const res = await fetch(`${API}/pregnancies`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({ patient_id: currentPatientId, bmi, started_at })
+    });
+    if (!res.ok) { throw new Error(); }
+    closePregnancyModal();
+    loadPregnancies();
+    showPageAlert("Gravidez registada com sucesso.", "success");
+  } catch (e) {
+    document.getElementById("pregnancyModalAlert").textContent = "Erro ao registar gravidez.";
+    document.getElementById("pregnancyModalAlert").classList.remove("hidden");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Registar gravidez";
+  }
+}
+
+// ── Laboratório e alertas ──
+const FIELD_LABELS = {
+  plgf: "PlGF", uta_pi: "UtA-PI", sflt1_plgf_ratio: "sFlt-1/PlGF"
+};
+
+async function loadClinicalPanels(pregnancies) {
+  const active = pregnancies.find(p => !p.ended_at) || pregnancies[0];
+  if (!active) {
+    document.getElementById("clinicalAlerts").innerHTML = "";
+    document.getElementById("labPanelCard").classList.add("hidden");
+    return;
+  }
+  await Promise.all([
+    loadClinicalAlerts(active.id),
+    loadLabPanel(active.id),
+  ]);
+}
+
+async function loadClinicalAlerts(pregnancyId) {
+  const box = document.getElementById("clinicalAlerts");
+  try {
+    const res = await fetch(`${API}/clinical/pregnancies/${pregnancyId}/alerts`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    if (!res.ok) { box.innerHTML = ""; return; }
+    const alerts = await res.json();
+    if (!alerts.length) { box.innerHTML = ""; return; }
+    box.innerHTML = alerts.map(a => `
+      <div class="clinical-banner ${a.severity === "warning" ? "warning" : "info"}">
+        <span>${a.message}</span>
+        ${a.type === "lab_after_assessment" ? `
+          <button class="btn btn-primary btn-sm"
+            onclick="recalcRisk('${pregnancyId}', ${a.gestational_week}, '${a.case_id || ""}')">
+            Recalcular risco
+          </button>` : ""}
+      </div>
+    `).join("");
+  } catch (e) {
+    box.innerHTML = "";
+  }
+}
+
+async function loadLabPanel(pregnancyId) {
+  const card  = document.getElementById("labPanelCard");
+  const tbody = document.getElementById("labPanelBody");
+  try {
+    // Verifica primeiro se já existem avaliações com dados de lab — se sim, esconde
+    const timelineRes = await fetch(`${API}/assessments/${pregnancyId}/timeline`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    if (timelineRes.ok) {
+      const timeline = await timelineRes.json();
+      const hasLabUsed = timeline.some(t =>
+        t.plgf != null || t.uta_pi != null || t.sflt1_plgf_ratio != null
+      );
+      if (hasLabUsed) { card.classList.add("hidden"); return; }
+    }
+
+    // Sem avaliações com lab: mostra o painel de análises pendentes
+    const res = await fetch(`${API}/clinical/pregnancies/${pregnancyId}/lab-panel`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    if (!res.ok || res.status === 503) { card.classList.add("hidden"); return; }
+    const rows = await res.json();
+    if (!rows.length) { card.classList.add("hidden"); return; }
+
+    card.classList.remove("hidden");
+    tbody.innerHTML = rows.map(o => `
+      <tr class="${o.is_relevant === false ? "lab-stale" : ""}">
+        <td>${FIELD_LABELS[o.field] ?? o.field}</td>
+        <td><strong>${o.value}</strong> ${o.unit ?? ""}</td>
+        <td>${o.gestational_week}ª</td>
+        <td>${formatDate(o.recorded_at)}</td>
+        <td>
+          <span class="badge-lab">${o.source}</span>
+          ${o.is_relevant === false ? '<span class="badge-stale">desactualizado</span>' : ""}
+        </td>
+      </tr>`).join("");
+  } catch (e) {
+    card.classList.add("hidden");
+  }
+}
+
+async function recalcRisk(pregnancyId, gestationalWeek, caseId) {
+  try {
+    const body = { pregnancy_id: pregnancyId, gestational_week: gestationalWeek };
+    if (caseId) body.assessment_case_id = caseId;
+    const res = await fetch(`${API}/assessments/recalculate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showPageAlert(data.detail ?? "Erro ao recalcular.");
+      return;
+    }
+    showPageAlert(`Risco recalculado: ${data.risk_level} (${(data.risk_probability * 100).toFixed(1)}%).`, "success");
+    loadPregnancies();
+    if (document.getElementById("tab-history") && !document.getElementById("tab-history").classList.contains("hidden")) {
+      loadRiskHistory();
+    }
+  } catch (e) {
+    showPageAlert("Erro ao recalcular risco.");
+  }
+}
+
+// ── Histórico de risco ──
+function populateHistorySelect(pregnancies) {
+  const select = document.getElementById("historyPregnancySelect");
+  const empty  = document.getElementById("historyEmptyMsg");
+  const current = select.value;
+
+  if (pregnancies.length === 0) {
+    select.innerHTML = '<option value="">— Sem gravidezes —</option>';
+    select.disabled = true;
+    empty.classList.remove("hidden");
+    return;
+  }
+
+  empty.classList.add("hidden");
+  select.disabled = false;
+  select.innerHTML = '<option value="">— Seleccione uma gravidez —</option>' +
+    pregnancies.map(p => {
+      const label = `Gravidez ${p.pregnancy_number} — ${formatDate(p.started_at)}` +
+        (p.ended_at ? ` a ${formatDate(p.ended_at)}` : " (em curso)");
+      return `<option value="${p.id}">${label}</option>`;
+    }).join("");
+
+  if (current && pregnancies.some(p => p.id === current)) {
+    select.value = current;
+  }
+}
+
+async function onHistoryPregnancyChange() {
+  const pregnancyId = document.getElementById("historyPregnancySelect").value;
+  const chartSection = document.getElementById("riskChartSection");
+  const listSection  = document.getElementById("historyAssessmentsSection");
+
+  if (!pregnancyId) {
+    chartSection.classList.add("hidden");
+    listSection.classList.add("hidden");
+    destroyRiskChart();
+    return;
+  }
+
+  chartSection.classList.remove("hidden");
+  listSection.classList.remove("hidden");
+
+  const listEl = document.getElementById("historyAssessments");
+  listEl.innerHTML = '<p style="color:var(--slate-light);font-size:.85rem;">A carregar...</p>';
+
+  try {
+    // Usa o endpoint /timeline: 1 ponto por semana + histórico por semana
+    const res = await fetch(`${API}/assessments/${pregnancyId}/timeline`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const timeline = await res.json();
+    renderRiskChart(timeline);
+    const preg = pregnanciesById[pregnancyId];
+    renderAssessmentsTimeline(listEl, timeline, pregnancyId, preg && !preg.ended_at);
+  } catch (e) {
+    listEl.innerHTML = '<p style="color:var(--risk-high);font-size:.85rem;">Erro ao carregar avaliações.</p>';
+  }
+}
+
+function riskPointColor(level) {
+  return { baixo: "#16a34a", moderado: "#d97706", alto: "#dc2626" }[level] || "#94a3b8";
+}
+
+function destroyRiskChart() {
+  if (riskChart) {
+    riskChart.destroy();
+    riskChart = null;
+  }
+}
+
+function renderRiskChart(timeline) {
+  destroyRiskChart();
+
+  const withRisk = timeline.filter(t => t.risk_probability != null);
+  const noDataEl = document.getElementById("riskChartNoData");
+  const canvas   = document.getElementById("riskChart");
+
+  if (withRisk.length === 0) {
+    noDataEl.classList.remove("hidden");
+    canvas.style.display = "none";
+    return;
+  }
+
+  noDataEl.classList.add("hidden");
+  canvas.style.display = "block";
+
+  // 1 ponto por semana — o mais recente (já vem assim do /timeline)
+  const sorted = [...withRisk].sort((a, b) => a.gestational_week - b.gestational_week);
+  const labels = sorted.map(a => `${a.gestational_week}ª`);
+  const values = sorted.map(a => +(a.risk_probability * 100).toFixed(1));
+  const colors = sorted.map(a => riskPointColor(a.risk_level));
+
+  riskChart = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        label: "Probabilidade PE (%)",
+        data: values,
+        borderColor: "#1d4ed8",
+        backgroundColor: "rgba(29, 78, 216, 0.08)",
+        pointBackgroundColor: colors,
+        pointBorderColor: colors,
+        pointRadius: 6,
+        pointHoverRadius: 9,
+        pointStyle: "circle",
+        borderWidth: 2,
+        tension: 0.25,
+        fill: true,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label(ctx) {
+              const a = sorted[ctx.dataIndex];
+              const level = a.risk_level || "—";
+              const versions = a.version_count > 1 ? ` · ${a.version_count} versões` : "";
+              return `${ctx.parsed.y}% · ${level}${versions}`;
+            },
+          },
+        },
+      },
+      scales: {
+        y: {
+          min: 0,
+          max: 100,
+          title: { display: true, text: "Probabilidade (%)" },
+          grid: { color: "#e2e8f0" },
+        },
+        x: {
+          title: { display: true, text: "Semana gestacional" },
+          grid: { display: false },
+        },
+      },
+    },
+    plugins: [{
+      id: "riskZones",
+      beforeDraw(chart) {
+        const { ctx, chartArea, scales } = chart;
+        if (!chartArea) return;
+        const yScale = scales.y;
+        const zones = [
+          { from: 0,  to: 20, color: "rgba(22, 163, 74, 0.06)" },
+          { from: 20, to: 50, color: "rgba(217, 119, 6, 0.06)" },
+          { from: 50, to: 100, color: "rgba(220, 38, 38, 0.06)" },
+        ];
+        zones.forEach(z => {
+          const yTop = yScale.getPixelForValue(z.to);
+          const yBot = yScale.getPixelForValue(z.from);
+          ctx.fillStyle = z.color;
+          ctx.fillRect(chartArea.left, yTop, chartArea.right - chartArea.left, yBot - yTop);
+        });
+      },
+    }],
+  });
+}
+
+function loadRiskHistory() {
+  populateHistorySelect(pregnanciesCache);
+  const select = document.getElementById("historyPregnancySelect");
+  if (pregnanciesCache.length > 0 && !select.value) {
+    select.value = pregnanciesCache[0].id;
+    onHistoryPregnancyChange();
+  } else if (select.value) {
+    onHistoryPregnancyChange();
+  }
+}
+
+// ── Tabs ──
+function switchTab(tab) {
+  ["pregnancies","history"].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.toggle("hidden", t !== tab);
+  });
+  document.querySelectorAll(".tab-btn").forEach((btn, i) => {
+    btn.classList.toggle("active", ["pregnancies","history"][i] === tab);
+  });
+  if (tab === "history") {
+    loadRiskHistory();
+  }
+}
+
+// ── Utils ──
+function riskEmoji(l) { return {baixo:"🟢",moderado:"🟡",alto:"🔴"}[l] ?? ""; }
+function formatDate(iso) { return iso ? new Date(iso).toLocaleDateString("pt-PT") : "—"; }
+function showPageAlert(msg, type = "error") {
+  const el = document.getElementById("pageAlert");
+  el.textContent = msg; el.className = `alert alert-${type}`;
+  el.classList.remove("hidden");
+  setTimeout(() => el.classList.add("hidden"), 4000);
+}
+</script>
+
+</body>
+</html>

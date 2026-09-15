@@ -1,0 +1,3 @@
+# Acrescenta apenas o adaptador para volumes VTK legados.
+-r requirements.txt
+vtk==9.7.0

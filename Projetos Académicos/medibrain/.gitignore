@@ -1,0 +1,19 @@
+.DS_Store
+.venv/
+.vscode/
+__pycache__/
+*.py[cod]
+
+# Sinais EEG e derivados nunca entram no historial Git.
+*.edf
+*.edf.part
+*.eeg
+*.fif
+*.vhdr
+*.vmrk
+data/*
+!data/README.md
+
+# Resultados locais gerados pelas pipelines.
+outputs/
+results/

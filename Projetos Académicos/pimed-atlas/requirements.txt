@@ -1,0 +1,4 @@
+# Dependências diretas da reconstrução, testadas com Python 3.12.3.
+numpy==2.5.3
+scipy==1.18.1
+scikit-image==0.26.0

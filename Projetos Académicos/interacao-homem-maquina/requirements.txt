@@ -1,0 +1,7 @@
+# Dependências inferidas dos imports; as versões originais não ficaram registadas.
+matplotlib
+mediapipe
+numpy
+opencv-python
+openpyxl
+pandas

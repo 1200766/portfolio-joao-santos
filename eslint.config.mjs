@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Curated project artefacts are independent from the site application.
+    "Projetos Académicos/**",
+    "Projetos Pessoais/**",
   ]),
 ]);
 

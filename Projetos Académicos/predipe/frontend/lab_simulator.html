@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrediPE — Simulador LIS</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .sim-wrap { max-width: 560px; margin: 48px auto; padding: 0 24px 48px; }
+    .sim-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .sim-header .logo-mark { margin: 0 auto 12px; }
+    .sim-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-md);
+    }
+    .sim-card h2 { margin-bottom: 8px; font-size: 1.2rem; }
+    .sim-card > p { font-size: .85rem; margin-bottom: 20px; }
+    .hint-box {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      font-size: .8rem;
+      color: #0369a1;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .success-box {
+      background: var(--risk-low-bg);
+      border: 1px solid #86efac;
+      color: #166534;
+      border-radius: var(--radius);
+      padding: 14px;
+      font-size: .85rem;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sim-wrap">
+  <div class="sim-header">
+    <div class="logo-mark">LIS</div>
+    <h1 style="font-size:1.5rem;margin-top:12px;">Simulador de laboratório</h1>
+    <p style="font-size:.9rem;">Envia marcadores como se fosses o LIS/FHIR externo</p>
+  </div>
+
+  <div class="sim-card">
+    <h2>Enviar análises</h2>
+    <p>Os dados ficam associados à gravidez e aparecem na ficha do médico (só leitura).</p>
+
+    <div class="hint-box">
+      <strong>Chave API:</strong> não é a <code>SUPABASE_PUBLISHABLE_KEY</code>.<br/>
+      Cria uma chave exclusiva para a demonstração, guarda-a apenas em
+      <code>backend/.env</code> e ativa explicitamente
+      <code>FHIR_INGEST_ENABLED=true</code>. O backend não tem chave nem integração
+      ativa por omissão. O browser não guarda a chave depois de sair desta página.
+    </div>
+    <div class="hint-box" style="background:#f0fdf4;border-color:#86efac;color:#166534;">
+      <strong>ID da gravidez:</strong> na ficha da paciente (gravidez expandida) copia o UUID
+      ou usa o link «enviar análises».
+    </div>
+
+    <div id="simAlert" class="alert alert-error hidden" style="margin-bottom:16px;"></div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="form-group">
+        <label>Chave API FHIR (X-FHIR-API-Key)</label>
+        <input type="password" id="api_key" placeholder="YOUR_FHIR_API_KEY" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label>ID da gravidez (UUID) *</label>
+        <input type="text" id="pregnancy_id" placeholder="ex: a1b2c3d4-..." />
+      </div>
+      <div class="form-group">
+        <label>Semana gestacional *</label>
+        <input type="number" id="gestational_week" min="4" max="42" placeholder="ex: 20" />
+      </div>
+      <div class="form-group">
+        <label>PlGF (pg/mL)</label>
+        <input type="number" id="plgf" step="0.1" min="0" placeholder="ex: 45.2" />
+      </div>
+      <div class="form-group">
+        <label>UtA-PI</label>
+        <input type="number" id="uta_pi" step="0.01" min="0.5" max="4" placeholder="ex: 1.15" />
+      </div>
+      <div class="form-group">
+        <label>Rácio sFlt-1/PlGF</label>
+        <input type="number" id="sflt1_plgf_ratio" step="0.1" min="0" placeholder="ex: 12.5" />
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-lg" style="width:100%;margin-top:20px;" id="sendBtn" onclick="sendLab()">
+      Enviar para o CDSS
+    </button>
+
+    <div id="simSuccess" class="success-box hidden"></div>
+
+    <p style="margin-top:20px;font-size:.78rem;text-align:center;">
+      <a href="login.html">← Voltar ao login (médico)</a>
+    </p>
+  </div>
+</div>
+
+<script>
+const API = "http://127.0.0.1:8000";
+
+function getOptional(id) {
+  const v = document.getElementById(id).value.trim();
+  if (!v) return null;
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+async function sendLab() {
+  const btn = document.getElementById("sendBtn");
+  const alertEl = document.getElementById("simAlert");
+  const okEl = document.getElementById("simSuccess");
+  alertEl.classList.add("hidden");
+  okEl.classList.add("hidden");
+
+  const apiKey = document.getElementById("api_key").value.trim();
+  const pregnancy_id = document.getElementById("pregnancy_id").value.trim();
+  const gestational_week = parseInt(document.getElementById("gestational_week").value, 10);
+  const plgf = getOptional("plgf");
+  const uta_pi = getOptional("uta_pi");
+  const sflt1_plgf_ratio = getOptional("sflt1_plgf_ratio");
+
+  if (!apiKey || !pregnancy_id || !gestational_week) {
+    alertEl.textContent = "Preencha a chave API, o ID da gravidez e a semana gestacional.";
+    alertEl.classList.remove("hidden");
+    return;
+  }
+  if (plgf == null && uta_pi == null && sflt1_plgf_ratio == null) {
+    alertEl.textContent = "Indique pelo menos um marcador (PlGF, UtA-PI ou rácio).";
+    alertEl.classList.remove("hidden");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "A enviar...";
+
+  try {
+    const res = await fetch(`${API}/fhir/Observation`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-FHIR-API-Key": apiKey,
+      },
+      body: JSON.stringify({
+        pregnancy_id,
+        gestational_week,
+        plgf,
+        uta_pi,
+        sflt1_plgf_ratio,
+        fhir_id: `sim-${Date.now()}`,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alertEl.textContent = typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail);
+      alertEl.classList.remove("hidden");
+      return;
+    }
+
+    const n = (data.observations || []).length;
+    okEl.innerHTML = `
+      <strong>✓ ${n} observação(ões) registada(s).</strong><br/>
+      O médico verá os valores na ficha (painel «Análises recentes») e no formulário de avaliação (só leitura).<br/>
+      ${data.alerts?.length ? `<br/>Alertas gerados: ${data.alerts.length}` : ""}
+    `;
+    okEl.classList.remove("hidden");
+  } catch (e) {
+    alertEl.textContent = "Não foi possível ligar ao servidor. O backend está a correr?";
+    alertEl.classList.remove("hidden");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Enviar para o CDSS";
+  }
+}
+
+</script>
+</body>
+</html>

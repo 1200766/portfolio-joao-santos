@@ -1,0 +1,15 @@
+.DS_Store
+*.pcap
+*.pcapng
+*.ova
+*.ovf
+*.vdi
+*.vmdk
+*.key
+*.pem
+*.p12
+*.jks
+*.class
+/build/
+__MACOSX/
+vm/

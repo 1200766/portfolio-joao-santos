@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CDSS — Nova Avaliação</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .form-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 28px;
+      align-items: start;
+    }
+    .sticky-result {
+      position: sticky;
+      top: 80px;
+    }
+    .risk-gauge {
+      text-align: center;
+      padding: 24px 0 16px;
+    }
+    .gauge-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 8px solid var(--border);
+      margin: 0 auto 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .4s ease;
+    }
+    .gauge-circle.baixo   { border-color: var(--risk-low);  background: var(--risk-low-bg); }
+    .gauge-circle.moderado{ border-color: var(--risk-mid);  background: var(--risk-mid-bg); }
+    .gauge-circle.alto    { border-color: var(--risk-high); background: var(--risk-high-bg);}
+
+    .shap-section { margin-top: 20px; }
+    .shap-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .shap-label-col { width: 140px; font-size: .78rem; color: var(--slate); flex-shrink: 0; }
+    .shap-bar-track { flex: 1; height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .shap-bar-fill  { height: 100%; border-radius: 4px; background: var(--blue); transition: width .6s ease; }
+    .shap-val { font-family: var(--font-mono); font-size: .72rem; color: var(--slate-light); width: 36px; text-align: right; }
+    .manual-lab-toggle {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      font-size: .84rem;
+      line-height: 1.45;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .manual-lab-toggle input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      flex-shrink: 0;
+      accent-color: var(--blue);
+      cursor: pointer;
+    }
+    .manual-lab-toggle span { color: var(--slate); text-transform: none; font-weight: 400; letter-spacing: 0; }
+
+    .lab-fields-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .lab-field-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 14px 14px 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      min-height: 118px;
+    }
+    .lab-field-box.state-lis {
+      background: #f0f9ff;
+      border-color: #93c5fd;
+    }
+    .lab-field-box.state-manual {
+      background: #fffbeb;
+      border-color: #fcd34d;
+    }
+    .lab-field-head {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .lab-field-head label {
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--navy);
+      text-transform: none;
+      letter-spacing: 0;
+      line-height: 1.2;
+    }
+    .lab-field-status {
+      align-self: flex-start;
+      font-size: .65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      padding: 3px 8px;
+      border-radius: 99px;
+      line-height: 1.2;
+    }
+    .lab-field-status.waiting { background: #e2e8f0; color: #475569; }
+    .lab-field-status.lis { background: #dbeafe; color: #1d4ed8; }
+    .lab-field-status.manual { background: #fef3c7; color: #b45309; }
+
+    .lab-field-box input {
+      width: 100%;
+      min-height: 42px;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    .lab-field-box input:disabled {
+      opacity: 1;
+      background: #eef2f7;
+      border-color: #cbd5e1;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+    .lab-field-box.state-lis input:disabled {
+      background: #e0f2fe;
+      border-color: #93c5fd;
+      color: var(--navy);
+      font-weight: 500;
+    }
+    .lab-field-meta {
+      font-size: .7rem;
+      color: var(--slate-light);
+      min-height: 1em;
+    }
+
+    .workflow-banner {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      font-size: .85rem;
+      color: var(--slate);
+      line-height: 1.55;
+    }
+    .workflow-banner strong { color: var(--navy); }
+
+    .source-card {
+      border-radius: var(--radius-lg);
+      margin-bottom: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .source-card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .source-card-header .icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+    }
+    .source-clinician .source-card-header { background: #f0fdf4; }
+    .source-clinician .icon { background: #dcfce7; }
+    .source-clinician { border-left: 4px solid var(--risk-low); }
+
+    .source-lab .source-card-header { background: #f0f9ff; }
+    .source-lab .icon { background: #e0f2fe; }
+    .source-lab { border-left: 4px solid var(--blue); }
+
+    .source-card-header h3 {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin: 0;
+    }
+    .source-card-header p {
+      font-size: .78rem;
+      color: var(--slate-light);
+      margin: 2px 0 0;
+    }
+    .source-card-body { padding: 20px; background: var(--white); }
+
+    .lab-inbound-panel {
+      background: #f8fafc;
+      border: 1px dashed var(--border-dark);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      font-size: .85rem;
+    }
+    .lab-inbound-panel.has-data {
+      border-style: solid;
+      border-color: #7dd3fc;
+      background: #f0f9ff;
+    }
+    .lab-inbound-panel .lab-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .lab-inbound-panel .lab-row:last-child { border-bottom: none; }
+    .badge-stale {
+      font-size: .65rem;
+      background: var(--border);
+      color: var(--slate);
+      padding: 1px 6px;
+      border-radius: 99px;
+      margin-left: 4px;
+    }
+    .lab-stale { opacity: .65; }
+
+    @media (max-width: 900px) {
+      .form-layout { grid-template-columns: 1fr; }
+      .sticky-result { position: static; }
+      .lab-fields-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a class="navbar-brand" href="patient.html">
+    <div class="logo-mark">PE</div>
+    <div>
+      <span>PrediPE</span>
+      <small>CDSS · Pré-eclâmpsia</small>
+    </div>
+  </a>
+  <div class="navbar-right">
+    <div class="navbar-user">
+      <strong id="navName">—</strong>
+      Médico
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">Sair</button>
+  </div>
+</nav>
+
+<div class="container" style="padding-top:28px;padding-bottom:56px;">
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb fade-up" style="margin-bottom:20px;">
+    <a href="dashboard_doctor.html">Pacientes</a> /
+    <a href="patient.html" id="breadPatient">Paciente</a> /
+    Nova avaliação
+  </div>
+
+  <div class="page-header" style="margin-bottom:24px;">
+    <h1 class="fade-up">Nova avaliação clínica</h1>
+    <p class="fade-up fade-up-delay-1" id="pregnancyContext" style="margin-top:4px;"></p>
+  </div>
+
+  <div id="pageAlert" class="alert hidden" style="margin-bottom:16px;"></div>
+  <div id="missingLabHint" class="alert hidden" style="margin-bottom:16px;font-size:.85rem;"></div>
+  <div id="backendSetupHint" class="alert alert-error hidden" style="margin-bottom:16px;font-size:.85rem;"></div>
+
+  <div class="workflow-banner fade-up">
+    <strong>Duas fontes de dados:</strong> a consulta (médico) e o laboratório (LIS/FHIR).
+    Os valores do lab aparecem automaticamente e ficam <strong>só leitura</strong>.
+    Pode calcular o risco só com a consulta; quando chegarem análises, use <strong>Recalcular</strong> na ficha.
+  </div>
+
+  <div class="form-layout">
+
+    <div>
+
+      <!-- CONSULTA -->
+      <div class="source-card source-clinician fade-up">
+        <div class="source-card-header">
+          <div class="icon">🩺</div>
+          <div>
+            <h3>Dados da consulta</h3>
+            <p>Preenchidos pelo médico — sempre editáveis</p>
+          </div>
+        </div>
+        <div class="source-card-body">
+          <div class="form-grid" style="margin-bottom:16px;">
+            <div class="form-group">
+              <label for="gestational_week">Semana de gestação *</label>
+              <input type="number" id="gestational_week" min="4" max="42" placeholder="ex: 20"
+                oninput="scheduleMergePreview()" />
+              <span class="field-hint">Actualiza os dados de laboratório ao alterar a semana</span>
+            </div>
+          </div>
+          <div class="form-section-title">Estado clínico</div>
+          <div class="form-grid" style="margin-bottom:16px;">
+            <div class="form-group">
+              <label for="diabetes">Diabetes</label>
+              <select id="diabetes">
+                <option value="none">Sem diabetes</option>
+                <option value="type1">Tipo 1</option>
+                <option value="type2">Tipo 2</option>
+                <option value="gestational">Gestacional</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="chronic_hypertension">Hipertensão crónica</label>
+              <select id="chronic_hypertension">
+                <option value="false">Não</option>
+                <option value="true">Sim</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-section-title">Pressão arterial na consulta *</div>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="sbp">SBP (mmHg)</label>
+              <input type="number" id="sbp" min="70" max="250" placeholder="ex: 120" oninput="updateMAP()" />
+            </div>
+            <div class="form-group">
+              <label for="dbp">DBP (mmHg)</label>
+              <input type="number" id="dbp" min="40" max="150" placeholder="ex: 80" oninput="updateMAP()" />
+            </div>
+            <div class="form-group">
+              <label>MAP (calculado)</label>
+              <input type="text" id="map_display" readonly
+                style="background:#f1f5f9;color:var(--slate);font-family:var(--font-mono);" placeholder="—" />
+            </div>
+          </div>
+          <div id="bpError" class="field-error hidden" style="margin-top:8px;">
+            A pressão diastólica deve ser inferior à sistólica.
+          </div>
+        </div>
+      </div>
+
+      <!-- LABORATÓRIO -->
+      <div class="source-card source-lab fade-up">
+        <div class="source-card-header">
+          <div class="icon">🔬</div>
+          <div>
+            <h3>Marcadores de laboratório</h3>
+            <p id="labSectionSubtitle">Recebidos do LIS — bloqueados quando enviados automaticamente</p>
+          </div>
+        </div>
+        <div class="source-card-body">
+          <div id="labInboundPanel" class="lab-inbound-panel">
+            Indique a semana gestacional para ver análises recebidas do laboratório.
+          </div>
+
+          <label class="manual-lab-toggle" id="manualLabToggleWrap">
+            <input type="checkbox" id="manual_lab_any" onchange="toggleManualLabEntry()" />
+            <span>
+              <strong>Resultados em papel</strong><br/>
+              Active para preencher manualmente valores que ainda não vieram do laboratório.
+            </span>
+          </label>
+
+          <div class="lab-fields-grid">
+            <div class="lab-field-box state-waiting" id="wrap_uta_pi">
+              <div class="lab-field-head">
+                <label for="uta_pi">UtA-PI</label>
+                <span id="uta_pi_status" class="lab-field-status waiting">Aguarda LIS</span>
+              </div>
+              <input type="number" id="uta_pi" step="0.01" min="0.5" max="4.0" disabled placeholder="—" />
+              <span id="uta_pi_meta" class="lab-field-meta"></span>
+            </div>
+            <div class="lab-field-box state-waiting" id="wrap_plgf">
+              <div class="lab-field-head">
+                <label for="plgf">PlGF (pg/mL)</label>
+                <span id="plgf_status" class="lab-field-status waiting">Aguarda LIS</span>
+              </div>
+              <input type="number" id="plgf" step="0.1" min="0" disabled placeholder="—" />
+              <span id="plgf_meta" class="lab-field-meta"></span>
+            </div>
+            <div class="lab-field-box state-waiting" id="wrap_sflt1_plgf_ratio">
+              <div class="lab-field-head">
+                <label for="sflt1_plgf_ratio">sFlt-1/PlGF</label>
+                <span id="sflt1_plgf_ratio_status" class="lab-field-status waiting">Aguarda LIS</span>
+              </div>
+              <input type="number" id="sflt1_plgf_ratio" step="0.1" min="0" disabled placeholder="—" />
+              <span id="sflt1_plgf_ratio_meta" class="lab-field-meta"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-lg" id="submitBtn" onclick="submitAssessment()">
+        Calcular risco da consulta
+      </button>
+
+    </div>
+
+    <!-- Painel de resultado (sticky) -->
+    <div class="sticky-result">
+      <div class="card" id="resultPanel">
+        <div id="resultPlaceholder" style="text-align:center;padding:32px 16px;color:var(--slate-light);">
+          <div style="font-size:2.5rem;margin-bottom:12px;">📊</div>
+          <p style="font-size:.9rem;">Preencha o formulário e clique em<br/><strong>Calcular risco</strong>.</p>
+        </div>
+
+        <div id="resultContent" class="hidden">
+          <!-- Gauge -->
+          <div class="risk-gauge">
+            <div class="gauge-circle" id="gaugeCircle">
+              <div class="risk-probability" id="resultProbability" style="font-size:1.6rem;">—</div>
+              <div style="font-size:.7rem;color:var(--slate);">probabilidade</div>
+            </div>
+            <div id="resultLevel" style="font-size:1rem;font-weight:600;"></div>
+            <div id="resultWeek" style="font-size:.78rem;color:var(--slate-light);margin-top:2px;"></div>
+            <div id="resultTrigger" style="font-size:.75rem;color:var(--slate-light);margin-top:4px;"></div>
+            <div id="resultConfidence" style="font-size:.78rem;color:var(--slate);margin-top:8px;"></div>
+          </div>
+
+          <div id="clinicalOutput" class="alert hidden" style="font-size:.78rem;line-height:1.5;margin-bottom:16px;"></div>
+
+          <!-- SHAP -->
+          <div class="shap-section">
+            <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);margin-bottom:12px;">
+              Contribuição de cada variável
+            </div>
+            <div id="shapBars"></div>
+            <p style="font-size:.72rem;color:var(--slate-light);margin-top:8px;line-height:1.5;">
+              Valores SHAP — maior barra = maior contribuição para o risco calculado.
+            </p>
+          </div>
+
+          <button class="btn btn-outline btn-lg" style="margin-top:16px;" onclick="window.location.href='patient.html'">
+            ← Voltar à ficha
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API = "http://127.0.0.1:8000";
+let currentPregnancyId = sessionStorage.getItem("currentPregnancyId");
+
+function getToken() { return sessionStorage.getItem("token"); }
+function logout()   { sessionStorage.clear(); window.location.href = "login.html"; }
+
+window.addEventListener("DOMContentLoaded", () => {
+  const name = sessionStorage.getItem("userName");
+  if (!name || sessionStorage.getItem("role") !== "doctor") {
+    window.location.href = "login.html";
+    return;
+  }
+  document.getElementById("navName").textContent = name;
+
+  const patientCode = sessionStorage.getItem("currentPatientCode");
+  if (patientCode) {
+    document.getElementById("breadPatient").textContent = patientCode;
+    document.getElementById("pregnancyContext").textContent =
+      `Paciente: ${patientCode} · gravidez activa`;
+  }
+  if (!currentPregnancyId) {
+    showPageAlert("Seleccione uma gravidez na ficha da paciente (+ Nova avaliação).");
+  }
+  lockAllLabFieldsWaiting();
+});
+
+const LAB_FIELDS = ["uta_pi", "plgf", "sflt1_plgf_ratio"];
+const FIELD_LABELS = { uta_pi: "UtA-PI", plgf: "PlGF", sflt1_plgf_ratio: "sFlt-1/PlGF" };
+let mergePreviewTimer = null;
+let lastLabReadonly = {};
+
+function setLabFieldState(field, state, metaText = "") {
+  const wrap = document.getElementById(`wrap_${field}`);
+  const input = document.getElementById(field);
+  const status = document.getElementById(`${field}_status`);
+  const meta = document.getElementById(`${field}_meta`);
+  if (!wrap || !input || !status) return;
+
+  wrap.classList.remove("state-waiting", "state-lis", "state-manual");
+
+  if (state === "lis") {
+    wrap.classList.add("state-lis");
+    status.className = "lab-field-status lis";
+    status.textContent = "Do laboratório";
+    input.disabled = true;
+    input.readOnly = true;
+    input.dataset.labValue = "1";
+    input.placeholder = "—";
+    meta.textContent = metaText;
+  } else if (state === "manual") {
+    wrap.classList.add("state-manual");
+    status.className = "lab-field-status manual";
+    status.textContent = "Entrada manual";
+    input.disabled = false;
+    input.readOnly = false;
+    delete input.dataset.labValue;
+    input.placeholder = "ex: valor em papel";
+    meta.textContent = metaText;
+  } else {
+    wrap.classList.add("state-waiting");
+    status.className = "lab-field-status waiting";
+    status.textContent = "Aguarda LIS";
+    input.disabled = true;
+    input.readOnly = false;
+    delete input.dataset.labValue;
+    if (!document.getElementById("manual_lab_any").checked) input.value = "";
+    input.placeholder = "—";
+    meta.textContent = "";
+  }
+}
+
+function lockAllLabFieldsWaiting() {
+  const manualOn = document.getElementById("manual_lab_any")?.checked;
+  LAB_FIELDS.forEach(field => {
+    const obs = lastLabReadonly[field];
+    const fromLis = obs && (obs.source === "lab" || obs.source === "fhir") && !obs.manual_lab_entry;
+    if (fromLis) return;
+    setLabFieldState(field, manualOn ? "manual" : "waiting");
+  });
+}
+
+function toggleManualLabEntry() {
+  const on = document.getElementById("manual_lab_any").checked;
+  LAB_FIELDS.forEach(field => {
+    const obs = lastLabReadonly[field];
+    const fromLis = obs && (obs.source === "lab" || obs.source === "fhir") && !obs.manual_lab_entry;
+    if (fromLis) return;
+    if (on) {
+      setLabFieldState(field, "manual");
+    } else {
+      document.getElementById(field).value = "";
+      setLabFieldState(field, "waiting");
+    }
+  });
+}
+
+function scheduleMergePreview() {
+  clearTimeout(mergePreviewTimer);
+  mergePreviewTimer = setTimeout(loadMergePreview, 350);
+}
+
+async function loadMergePreview() {
+  const week = parseInt(document.getElementById("gestational_week").value);
+  const setupHint = document.getElementById("backendSetupHint");
+  const panel = document.getElementById("labInboundPanel");
+
+  if (!currentPregnancyId || !week) {
+    panel.textContent = "Indique a semana gestacional para ver análises recebidas do laboratório.";
+    panel.classList.remove("has-data");
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `${API}/clinical/pregnancies/${currentPregnancyId}/merge-preview?gestational_week=${week}`,
+      { headers: { Authorization: `Bearer ${getToken()}` } }
+    );
+
+    if (res.status === 503) {
+      setupHint.textContent =
+        "Execute backend/sql/001_clinical_data_model.sql no Supabase e reinicie o servidor para activar observações e laboratório.";
+      setupHint.classList.remove("hidden");
+      panel.innerHTML = "<em>Backend em modo legado — migração SQL pendente.</em>";
+      return;
+    }
+    setupHint.classList.add("hidden");
+
+    if (!res.ok) return;
+    const data = await res.json();
+    renderLabInboundPanel(data.lab_panel || [], data.lab_readonly || {});
+    applyLabReadonly(data.lab_readonly || {});
+
+    const missing = [];
+    if (!data.features?.plgf) missing.push("PlGF");
+    if (!data.features?.uta_pi) missing.push("UtA-PI");
+    if (!data.features?.sflt1_plgf_ratio) missing.push("sFlt-1/PlGF");
+    const hint = document.getElementById("missingLabHint");
+    if (missing.length) {
+      hint.className = "alert";
+      hint.style.background = "var(--risk-mid-bg)";
+      hint.style.border = "1px solid #fcd34d";
+      hint.style.color = "#92400e";
+      hint.innerHTML =
+        `<strong>Sem marcadores laboratoriais na janela clínica:</strong> ${missing.join(", ")}. ` +
+        `Pode calcular na mesma — o risco terá maior incerteza.`;
+      hint.classList.remove("hidden");
+    } else {
+      hint.className = "alert alert-success";
+      hint.textContent = "Marcadores laboratoriais relevantes disponíveis para esta semana.";
+      hint.classList.remove("hidden");
+    }
+  } catch (e) {
+    panel.textContent = "Não foi possível ligar ao servidor.";
+  }
+}
+
+function renderLabInboundPanel(labPanel, labReadonly) {
+  const panel = document.getElementById("labInboundPanel");
+  const entries = labPanel.length
+    ? labPanel
+    : Object.values(labReadonly).filter(Boolean);
+
+  if (!entries.length) {
+    panel.classList.remove("has-data");
+    panel.innerHTML =
+      "<strong>Aguarda laboratório.</strong> Nenhuma análise recebida para esta semana (± janela clínica). " +
+      "Active «Resultados em papel» abaixo para introduzir valores manualmente, ou calcule só com a consulta.";
+    document.getElementById("labSectionSubtitle").textContent =
+      "Sem dados do LIS para esta semana";
+    return;
+  }
+
+  panel.classList.add("has-data");
+  document.getElementById("labSectionSubtitle").textContent =
+    `${entries.length} marcador(es) do laboratório na janela clínica`;
+  panel.innerHTML = entries.map(o => `
+    <div class="lab-row ${o.is_relevant === false ? "lab-stale" : ""}">
+      <span><strong>${FIELD_LABELS[o.field] ?? o.field}</strong>
+        ${o.is_relevant === false ? '<span class="badge-stale">desactualizado</span>' : ""}
+      </span>
+      <span>${o.value} ${o.unit ?? ""} · ${o.source} · ${new Date(o.recorded_at).toLocaleDateString("pt-PT")}</span>
+    </div>
+  `).join("");
+}
+
+function applyLabReadonly(labReadonly) {
+  lastLabReadonly = labReadonly || {};
+  const anyFromLis = LAB_FIELDS.some(f => {
+    const o = lastLabReadonly[f];
+    return o && (o.source === "lab" || o.source === "fhir") && !o.manual_lab_entry;
+  });
+
+  LAB_FIELDS.forEach(field => {
+    const input = document.getElementById(field);
+    const obs = lastLabReadonly[field];
+    if (obs && (obs.source === "lab" || obs.source === "fhir") && !obs.manual_lab_entry) {
+      input.value = obs.value;
+      const dateStr = new Date(obs.recorded_at).toLocaleDateString("pt-PT");
+      setLabFieldState(field, "lis", `Semana ${obs.gestational_week} · ${dateStr}`);
+    } else if (document.getElementById("manual_lab_any").checked) {
+      setLabFieldState(field, "manual");
+    } else {
+      setLabFieldState(field, "waiting");
+    }
+  });
+
+  document.getElementById("manualLabToggleWrap").classList.toggle("hidden", anyFromLis);
+  if (anyFromLis) {
+    document.getElementById("manual_lab_any").checked = false;
+  }
+}
+
+function collectManualLabFlags() {
+  if (!document.getElementById("manual_lab_any").checked) return null;
+  const flags = {};
+  LAB_FIELDS.forEach(f => {
+    if (document.getElementById(f).value !== "") flags[f] = true;
+  });
+  return Object.keys(flags).length ? flags : null;
+}
+
+// ── MAP em tempo real ──
+function updateMAP() {
+  const sbp = parseFloat(document.getElementById("sbp").value);
+  const dbp = parseFloat(document.getElementById("dbp").value);
+  const errEl = document.getElementById("bpError");
+
+  if (sbp && dbp) {
+    if (dbp >= sbp) {
+      errEl.classList.remove("hidden");
+      document.getElementById("map_display").value = "—";
+    } else {
+      errEl.classList.add("hidden");
+      document.getElementById("map_display").value = ((sbp + 2 * dbp) / 3).toFixed(2);
+    }
+  }
+}
+
+// ── Submeter ──
+async function submitAssessment() {
+  const btn = document.getElementById("submitBtn");
+
+  const sbp = parseInt(document.getElementById("sbp").value);
+  const dbp = parseInt(document.getElementById("dbp").value);
+  const gestational_week = parseInt(document.getElementById("gestational_week").value);
+  const uta_pi = getOptional("uta_pi");
+
+  if (!gestational_week || !sbp || !dbp) {
+    showPageAlert("Preencha todos os campos obrigatórios.");
+    return;
+  }
+  if (!currentPregnancyId) {
+    showPageAlert("Não foi encontrada uma gravidez ativa para esta avaliação. Volte à ficha da paciente e clique em + Nova avaliação.");
+    return;
+  }
+  if (dbp >= sbp) {
+    showPageAlert("A pressão diastólica deve ser inferior à sistólica.");
+    return;
+  }
+
+  const plgf             = getOptional("plgf");
+  const sflt1_plgf_ratio = getOptional("sflt1_plgf_ratio");
+
+  const payload = {
+    pregnancy_id: currentPregnancyId,
+    gestational_week,
+    diabetes:             document.getElementById("diabetes").value,
+    chronic_hypertension: document.getElementById("chronic_hypertension").value === "true",
+    sbp, dbp,
+    uta_pi: document.getElementById("uta_pi").dataset.labValue ? null : uta_pi,
+    plgf: document.getElementById("plgf").dataset.labValue ? null : plgf,
+    sflt1_plgf_ratio: document.getElementById("sflt1_plgf_ratio").dataset.labValue ? null : sflt1_plgf_ratio,
+    manual_lab_fields: collectManualLabFlags(),
+  };
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> A verificar...';
+
+  // Caso D: verifica se já existe avaliação para esta semana
+  try {
+    const checkRes = await fetch(
+      `${API}/assessments/${currentPregnancyId}/timeline`,
+      { headers: { Authorization: `Bearer ${getToken()}` } }
+    );
+    if (checkRes.ok) {
+      const timeline = await checkRes.json();
+      const weekExists = timeline.some(t => t.gestational_week === gestational_week);
+      if (weekExists) {
+        // Abre modal de confirmação com password (Caso D)
+        openConfirmModal(payload, gestational_week);
+        return; // btn fica disabled até modal confirmar ou cancelar
+      }
+    }
+  } catch (e) {
+    // Se não conseguir verificar, deixa submeter na mesma
+  }
+
+  doSubmitAssessment(payload);
+}
+
+async function doSubmitAssessment(payload) {
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> A calcular...';
+
+  try {
+    const res  = await fetch(`${API}/assessments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showPageAlert(formatApiError(data));
+      return;
+    }
+    renderResult(data, payload.gestational_week);
+  } catch (e) {
+    showPageAlert("Não foi possível ligar ao servidor.");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Calcular risco da consulta";
+  }
+}
+
+// ── Renderizar resultado ──
+function renderResult(data, week) {
+  const prob  = data.risk_probability ?? 0;
+  const level = data.risk_level ?? "baixo";
+  const shap  = data.shap_values ?? {};
+  const confidence = data.risk_confidence ?? "—";
+  const mode = data.prediction_mode ?? "";
+  const missingWarning = data.missing_data?.warning ?? "";
+  const clinicalSummary = data.clinical_summary ?? "";
+
+  document.getElementById("resultPlaceholder").classList.add("hidden");
+  document.getElementById("resultContent").classList.remove("hidden");
+
+  // Gauge
+  const circle = document.getElementById("gaugeCircle");
+  circle.className = `gauge-circle ${level}`;
+  document.getElementById("resultProbability").textContent = `${(prob * 100).toFixed(1)}%`;
+
+  const levelLabels = { baixo: "🟢 Risco baixo", moderado: "🟡 Risco moderado", alto: "🔴 Risco alto" };
+  document.getElementById("resultLevel").textContent = levelLabels[level] ?? level;
+  document.getElementById("resultWeek").textContent  = `Semana ${week} de gestação`;
+  const triggerLabels = {
+    clinician: "Snapshot · dados da consulta",
+    lab_arrival: "Snapshot · após chegada de laboratório",
+    recalc_request: "Snapshot · recálculo solicitado",
+    partial_auto: "Snapshot · cálculo parcial automático",
+  };
+  document.getElementById("resultTrigger").textContent =
+    triggerLabels[data.triggered_by] || (data.triggered_by ? `Snapshot · ${data.triggered_by}` : "");
+  document.getElementById("resultConfidence").textContent = `Confiança: ${confidence}`;
+
+  const clinicalOutput = document.getElementById("clinicalOutput");
+  const clinicalText = [
+    missingWarning,
+    mode ? `Modo: ${mode}` : "",
+    clinicalSummary
+  ].filter(Boolean).join(" ");
+  if (clinicalText) {
+    clinicalOutput.classList.remove("hidden");
+    clinicalOutput.classList.toggle("alert-error", Boolean(missingWarning));
+    clinicalOutput.classList.toggle("alert-success", !missingWarning);
+    clinicalOutput.textContent = clinicalText;
+  } else {
+    clinicalOutput.classList.add("hidden");
+  }
+
+  // SHAP bars
+  const shapEntries = Object.entries(shap).sort((a,b) => b[1] - a[1]);
+  const maxVal      = Math.max(...shapEntries.map(e => e[1]), 0.01);
+
+  const shapLabels = {
+    map: "Pressão arterial média",
+    uta_pi: "UtA-PI",
+    previous_pe: "PE anterior",
+    bmi: "IMC",
+    maternal_age: "Idade materna",
+    diabetes: "Diabetes",
+    chronic_hypertension: "Hipertensão crónica",
+    plgf: "PlGF",
+    sflt1_plgf_ratio: "sFlt-1/PlGF",
+    parity: "Paridade",
+    prior_nephropathy_or_proteinuria: "Nefropatia prévia",
+  };
+
+  document.getElementById("shapBars").innerHTML = shapEntries.map(([key, val]) => `
+    <div class="shap-row">
+      <div class="shap-label-col">${shapLabels[key] ?? key}</div>
+      <div class="shap-bar-track">
+        <div class="shap-bar-fill" style="width:${(val / maxVal * 100).toFixed(1)}%"></div>
+      </div>
+      <div class="shap-val">${val.toFixed(2)}</div>
+    </div>
+  `).join("");
+
+  // Scroll suave para o resultado em mobile
+  if (window.innerWidth < 900) {
+    document.getElementById("resultPanel").scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+function getOptional(id) {
+  const v = document.getElementById(id).value;
+  return v === "" ? null : parseFloat(v);
+}
+
+function formatApiError(data) {
+  const detail = data?.detail ?? data;
+
+  if (Array.isArray(detail)) {
+    return detail.map(item => {
+      const field = Array.isArray(item.loc) ? item.loc.join(".") : "campo";
+      return `${field}: ${item.msg}`;
+    }).join(" | ");
+  }
+
+  if (detail && typeof detail === "object") {
+    return JSON.stringify(detail);
+  }
+
+  return detail || "Erro ao calcular risco.";
+}
+
+function showPageAlert(msg) {
+  const el = document.getElementById("pageAlert");
+  el.textContent = msg;
+  el.className   = "alert alert-error";
+  el.classList.remove("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+</script>
+
+<!-- Modal de confirmação — Caso D: já existe avaliação para esta semana -->
+<div class="modal-overlay hidden" id="confirmModal">
+  <div class="modal" style="max-width:420px;">
+    <h2 style="margin-bottom:8px;">Confirmar nova avaliação</h2>
+    <p style="font-size:.88rem;color:var(--slate);margin-bottom:20px;" id="confirmModalMsg"></p>
+    <div id="confirmModalAlert" class="alert alert-error hidden" style="margin-bottom:14px;font-size:.84rem;"></div>
+    <div class="form-group" style="margin-bottom:20px;">
+      <label for="confirmPassword">Introduza a sua palavra-passe para confirmar</label>
+      <input type="password" id="confirmPassword" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeConfirmModal()">Cancelar</button>
+      <button class="btn btn-primary" id="confirmSubmitBtn" onclick="confirmAndSubmit()">
+        Confirmar e calcular
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Guarda o payload pendente enquanto aguarda confirmação
+let pendingPayload = null;
+
+function openConfirmModal(payload, week) {
+  pendingPayload = payload;
+  document.getElementById("confirmModalMsg").textContent =
+    `Já existe uma avaliação registada para a semana ${week}. ` +
+    `Ao confirmar, será criado um novo snapshot que passará a ser a versão actual. ` +
+    `A versão anterior ficará guardada no histórico.`;
+  document.getElementById("confirmPassword").value = "";
+  document.getElementById("confirmModalAlert").classList.add("hidden");
+  document.getElementById("confirmModal").classList.remove("hidden");
+  setTimeout(() => document.getElementById("confirmPassword").focus(), 100);
+}
+
+function closeConfirmModal() {
+  document.getElementById("confirmModal").classList.add("hidden");
+  pendingPayload = null;
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = false;
+  btn.textContent = "Calcular risco da consulta";
+}
+
+async function confirmAndSubmit() {
+  const password = document.getElementById("confirmPassword").value;
+  const alertEl  = document.getElementById("confirmModalAlert");
+  const btn      = document.getElementById("confirmSubmitBtn");
+
+  if (!password) {
+    alertEl.textContent = "Introduza a palavra-passe para confirmar.";
+    alertEl.classList.remove("hidden");
+    return;
+  }
+
+  // Valida a password re-autenticando
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> A verificar...';
+  alertEl.classList.add("hidden");
+
+  try {
+    const email = sessionStorage.getItem("userEmail");
+    const authRes = await fetch(`${API}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, role: "doctor" }),
+    });
+    if (!authRes.ok) {
+      alertEl.textContent = "Palavra-passe incorrecta. Tente novamente.";
+      alertEl.classList.remove("hidden");
+      return;
+    }
+  } catch (e) {
+    alertEl.textContent = "Não foi possível verificar. Verifique a ligação.";
+    alertEl.classList.remove("hidden");
+    return;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Confirmar e calcular";
+  }
+
+  // Password válida — fecha modal e submete
+  document.getElementById("confirmModal").classList.add("hidden");
+  doSubmitAssessment(pendingPayload);
+  pendingPayload = null;
+}
+</script>
+
+</body>
+</html>

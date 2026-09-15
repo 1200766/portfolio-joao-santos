@@ -1,0 +1,14 @@
+.DS_Store
+~$*
+*.xlsx
+*.xls
+*.csv
+*.docx
+*.dotx
+*.odt
+*.pptx
+*.pdf
+dados/
+data/
+output/
+outputs/

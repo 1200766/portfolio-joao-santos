@@ -1,0 +1,541 @@
+/* ============================================================
+   PREDIPE CDSS — Design System
+   Inspirado no design do site INFME da Leonor
+   Poppins · azul bebé · cards brancos · coral como acento
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+/* ── Variáveis ── */
+:root {
+  /* Paleta base — do INFME */
+  --baby-blue:    #E7F7FD;
+  --baby-blue-2:  #F0FAFF;
+  --blue:         #79ABC4;
+  --blue-hover:   #6395B3;
+  --blue-dark:    #4a7a96;
+  --coral:        #D9665B;
+  --coral-light:  #fdecea;
+  --blue-light: #a8cfe0;
+
+  /* Texto */
+  --navy:         #334155;
+  --slate:        #5A7081;
+  --slate-light:  #94a3b8;
+
+  /* Superfícies */
+  --surface:      #E7F7FD;
+  --white:        #ffffff;
+  --border:       #dbeafe;
+  --border-dark:  #bfdbfe;
+
+  /* Risco — mantém-se claro e funcional */
+  --risk-low:     #16a34a;
+  --risk-mid:     #d97706;
+  --risk-high:    #dc2626;
+  --risk-low-bg:  #f0fdf4;
+  --risk-mid-bg:  #fffbeb;
+  --risk-high-bg: #fef2f2;
+
+  /* Sombras com tint azulado */
+  --shadow-sm:    0 2px 8px rgba(121,171,196,.12);
+  --shadow-md:    0 8px 24px rgba(121,171,196,.18);
+  --shadow-lg:    0 15px 45px rgba(121,171,196,.25);
+
+  /* Forma */
+  --radius:       12px;
+  --radius-lg:    20px;
+  --transition:   .2s ease;
+
+  --font-body:    'Poppins', system-ui, sans-serif;
+  --font-mono:    'DM Mono', monospace;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: radial-gradient(circle at 60% 20%, var(--baby-blue-2), var(--baby-blue));
+  color: var(--navy);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Tipografia ── */
+h1, h2, h3 { font-family: var(--font-body); line-height: 1.25; font-weight: 700; }
+h1 { font-size: 1.9rem; }
+h2 { font-size: 1.4rem; font-weight: 600; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p  { color: var(--slate); font-weight: 300; }
+
+/* ── Layout ── */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+.hidden { display: none !important; }
+
+/* ── Cards ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 28px;
+  transition: box-shadow var(--transition);
+}
+.card:hover { box-shadow: var(--shadow-lg); }
+
+/* ── Botões ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 22px;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all var(--transition);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--blue);
+  color: var(--white);
+}
+.btn-primary:hover {
+  background: var(--blue-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(121,171,196,.35);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--blue);
+  border-color: var(--blue);
+}
+.btn-outline:hover { background: var(--blue); color: var(--white); }
+
+.btn-coral { background: var(--coral); color: var(--white); border-color: var(--coral); }
+.btn-coral:hover { background: #c95a50; transform: translateY(-2px); }
+
+.btn-ghost { background: transparent; color: var(--slate); border-color: transparent; }
+.btn-ghost:hover { background: rgba(121,171,196,.1); color: var(--navy); }
+
+.btn-teal { background: var(--blue); color: var(--white); }
+.btn-teal:hover { background: var(--blue-hover); transform: translateY(-2px); }
+
+.btn-sm  { padding: 6px 14px; font-size: .8rem; border-radius: 8px; }
+.btn-lg  { padding: 14px 32px; font-size: 1rem; width: 100%; justify-content: center; border-radius: var(--radius-lg); }
+.btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
+
+/* ── Formulários ── */
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+
+label {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--navy);
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+input, select, textarea {
+  font-family: var(--font-body);
+  font-size: .92rem;
+  padding: 11px 16px;
+  border: none;
+  border-radius: var(--radius);
+  background: #F8FAFC;
+  color: var(--navy);
+  transition: all var(--transition);
+  width: 100%;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  background: var(--white);
+  box-shadow: 0 0 0 2.5px var(--blue);
+}
+input.error, select.error { box-shadow: 0 0 0 2px var(--risk-high); }
+
+.field-hint  { font-size: .75rem; color: var(--slate-light); font-family: var(--font-mono); }
+.field-error { font-size: .75rem; color: var(--risk-high); font-weight: 500; }
+
+/* ── Navbar ── */
+.navbar {
+  background: transparent;
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(121,171,196,.1);
+  backdrop-filter: blur(12px);
+  background: rgba(231,247,253,.85);
+}
+
+.navbar-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.navbar-brand .logo-mark {
+  width: 36px; height: 36px;
+  background: var(--blue);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; color: white; font-weight: 700;
+  box-shadow: 0 4px 12px rgba(121,171,196,.4);
+}
+.navbar-brand span {
+  font-family: var(--font-body);
+  font-size: 1.1rem; color: var(--navy); font-weight: 700;
+}
+.navbar-brand small {
+  font-family: var(--font-body); font-size: .68rem;
+  color: var(--blue); display: block;
+  letter-spacing: .07em; text-transform: uppercase; line-height: 1;
+}
+
+.navbar-right { display: flex; align-items: center; gap: 16px; }
+.navbar-user { font-size: .83rem; color: var(--slate); }
+.navbar-user strong { color: var(--navy); display: block; font-size: .88rem; }
+
+/* ── Logo mark grande ── */
+.logo-mark {
+  width: 40px; height: 40px;
+  background: var(--blue);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-body); font-size: 1rem;
+  color: white; font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Badges de risco ── */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 11px; border-radius: 999px;
+  font-size: .75rem; font-weight: 600; letter-spacing: .02em;
+}
+.badge-baixo   { background: var(--risk-low-bg);  color: var(--risk-low);  }
+.badge-moderado { background: var(--risk-mid-bg); color: var(--risk-mid);  }
+.badge-alto    { background: var(--risk-high-bg); color: var(--risk-high); }
+.badge-neutral { background: #f1f5f9; color: var(--slate); }
+
+/* ── Alertas inline ── */
+.alert {
+  padding: 12px 18px;
+  border-radius: var(--radius);
+  font-size: .88rem; font-weight: 500;
+  border-left: 4px solid;
+}
+.alert-error   { background: var(--risk-high-bg); border-color: var(--risk-high); color: var(--risk-high); }
+.alert-success { background: var(--risk-low-bg);  border-color: var(--risk-low);  color: var(--risk-low);  }
+.alert-info    { background: #eff6ff; border-color: var(--blue); color: var(--blue-dark); }
+
+/* ── Separador ── */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--slate-light); font-size: .78rem;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ── Spinner ── */
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: white; border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Animações ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp .4s ease both; }
+.fade-up-delay-1 { animation-delay: .08s; }
+.fade-up-delay-2 { animation-delay: .16s; }
+.fade-up-delay-3 { animation-delay: .24s; }
+
+/* ── Página de autenticação ── */
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.auth-left {
+  background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 100%);
+  padding: 64px 56px;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.auth-left::before {
+  content: ''; position: absolute;
+  top: -100px; right: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.auth-left::after {
+  content: ''; position: absolute;
+  bottom: -60px; left: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(217,102,91,.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.auth-tagline {
+  font-family: var(--font-body);
+  font-size: 2.4rem; color: var(--white);
+  line-height: 1.2; margin-bottom: 20px; font-weight: 700;
+}
+.auth-tagline em { color: #fde8e6; font-style: normal; }
+
+.auth-desc {
+  color: rgba(255,255,255,.75);
+  font-size: .92rem; max-width: 340px;
+  line-height: 1.7; font-weight: 300;
+}
+
+.auth-stats { display: flex; gap: 32px; margin-top: 48px; }
+.auth-stat-value {
+  font-family: var(--font-body);
+  font-size: 1.6rem; color: white; font-weight: 700;
+}
+.auth-stat-label {
+  font-size: .72rem; color: rgba(255,255,255,.65);
+  text-transform: uppercase; letter-spacing: .06em;
+}
+
+.auth-right {
+  background: var(--baby-blue);
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px 56px;
+}
+
+.auth-form-box { width: 100%; max-width: 400px; }
+
+.auth-form-box h2 { margin-bottom: 6px; font-size: 1.6rem; color: var(--navy); }
+.auth-form-box > p { margin-bottom: 28px; font-size: .88rem; }
+
+/* ── Tabela de pacientes ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.data-table th {
+  text-align: left;
+  padding: 11px 18px;
+  font-size: .72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .06em;
+  color: var(--blue);
+  border-bottom: 2px solid var(--border);
+  background: rgba(121,171,196,.05);
+}
+.data-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(121,171,196,.06); cursor: pointer; }
+
+.patient-code {
+  font-family: var(--font-mono); font-size: .8rem; color: var(--slate);
+}
+
+/* ── Page header ── */
+.page-header {
+  padding: 28px 0 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+.page-header-inner {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.breadcrumb { font-size: .78rem; color: var(--slate-light); margin-bottom: 8px; }
+.breadcrumb a { color: var(--blue); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+
+/* ── Assessment accordion ── */
+.assessment-timeline { display: flex; flex-direction: column; gap: 10px; }
+
+.assessment-acc {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--transition);
+}
+.assessment-acc:hover { box-shadow: var(--shadow-md); }
+
+.assessment-acc-header {
+  display: grid;
+  grid-template-columns: 72px 1fr auto auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.assessment-acc-header:hover { background: rgba(121,171,196,.04); }
+
+.assessment-acc-body {
+  padding: 16px 18px 18px 90px;
+  border-top: 1px solid var(--border);
+  background: #fafcff;
+}
+
+.assessment-week {
+  font-family: var(--font-body);
+  font-size: 1.5rem; color: var(--blue-dark);
+  line-height: 1; font-weight: 700;
+}
+.assessment-week small {
+  font-family: var(--font-body);
+  font-size: .68rem; color: var(--slate-light);
+  display: block; font-weight: 400;
+}
+
+/* ── Form de assessment ── */
+.form-section { margin-bottom: 24px; }
+.form-section-title {
+  font-size: .72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--blue); margin-bottom: 12px;
+  padding-bottom: 8px; border-bottom: 2px solid var(--border);
+}
+.form-grid   { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.col-span-2  { grid-column: span 2; }
+
+/* ── Resultado de risco ── */
+.risk-result {
+  border-radius: var(--radius-lg);
+  padding: 28px; border: 2px solid; margin-top: 24px;
+}
+.risk-result.baixo    { background: var(--risk-low-bg);  border-color: var(--risk-low);  }
+.risk-result.moderado { background: var(--risk-mid-bg);  border-color: var(--risk-mid);  }
+.risk-result.alto     { background: var(--risk-high-bg); border-color: var(--risk-high); }
+
+.risk-probability {
+  font-family: var(--font-body); font-size: 3rem; line-height: 1; font-weight: 700;
+}
+.risk-result.baixo    .risk-probability { color: var(--risk-low);  }
+.risk-result.moderado .risk-probability { color: var(--risk-mid);  }
+.risk-result.alto     .risk-probability { color: var(--risk-high); }
+
+/* ── SHAP bars ── */
+.shap-bar { display: flex; align-items: center; gap: 10px; font-size: .83rem; margin-bottom: 8px; }
+.shap-bar-fill {
+  height: 8px; border-radius: 4px; background: var(--blue);
+  min-width: 4px; transition: width .5s ease;
+}
+.shap-label { width: 180px; color: var(--slate); font-size: .8rem; }
+.shap-value { font-family: var(--font-mono); font-size: .76rem; color: var(--slate-light); }
+
+/* ── Dashboard stats ── */
+.stat-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 20px; text-align: center;
+  transition: box-shadow var(--transition);
+}
+.stat-card:hover { box-shadow: var(--shadow-md); }
+.stat-value {
+  font-family: var(--font-body); font-size: 2rem;
+  color: var(--blue-dark); font-weight: 700;
+}
+.stat-label {
+  font-size: .72rem; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--slate-light); margin-top: 4px;
+}
+
+/* ── Current risk card ── */
+.current-risk-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex; justify-content: space-between; align-items: center;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 16px;
+  border-left: 4px solid var(--blue);
+}
+.cr-label { font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--blue); }
+.cr-week  { font-size: .8rem; color: var(--slate); margin-top: 3px; }
+
+/* ── Clinical banners ── */
+.clinical-banner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; padding: 12px 16px; border-radius: var(--radius);
+  font-size: .84rem; margin-bottom: 10px;
+}
+.clinical-banner.warning {
+  background: #fffbeb; border-left: 3px solid var(--risk-mid); color: #92400e;
+}
+.clinical-banner.info {
+  background: #eff6ff; border-left: 3px solid var(--blue); color: var(--blue-dark);
+}
+
+/* ── Lab panel ── */
+.badge-lab {
+  display: inline-block; font-size: .72rem; font-weight: 500;
+  padding: 2px 8px; border-radius: 6px;
+  background: rgba(121,171,196,.15); color: var(--blue-dark);
+}
+.badge-stale {
+  display: inline-block; font-size: .7rem; font-weight: 500;
+  padding: 2px 8px; border-radius: 6px;
+  background: var(--risk-mid-bg); color: var(--risk-mid); margin-left: 4px;
+}
+tr.lab-stale td { opacity: .55; }
+
+/* ── Assessment detail grid ── */
+.assessment-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
+.assessment-detail-grid dt { color: var(--slate-light); font-weight: 500; font-size: .8rem; }
+.assessment-detail-grid dd { color: var(--navy); font-weight: 500; font-size: .85rem; margin: 0 0 8px; }
+
+/* ── KPI row (dashboard) ── */
+#kpiRow { margin-bottom: 24px; }
+#kpiRow .stat-card { border-top: 3px solid var(--border); }
+#kpiRow .stat-card:nth-child(1) { border-top-color: var(--blue); }
+#kpiRow .stat-card:nth-child(1) .stat-value { color: var(--blue-dark); }
+
+/* ── Acc chevron ── */
+.acc-chevron { font-size: .85rem; color: var(--slate-light); transition: transform var(--transition); }
+.assessment-acc.open .acc-chevron { transform: rotate(180deg); }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(121,171,196,.25);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; backdrop-filter: blur(6px);
+}
+.modal {
+  background: var(--white); border-radius: var(--radius-lg);
+  padding: 32px; width: 100%; max-width: 480px;
+  box-shadow: var(--shadow-lg); max-height: 90vh; overflow-y: auto;
+  animation: fadeUp .25s ease;
+}
+.modal h2 { margin-bottom: 20px; color: var(--navy); }
+.modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+/* ── Patient dashboard ── */
+.patient-dashboard-grid {
+  display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
+}
+
+/* ── Responsivo ── */
+@media (max-width: 768px) {
+  .auth-page { grid-template-columns: 1fr; }
+  .auth-left { display: none; }
+  .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
+  .col-span-2 { grid-column: span 1; }
+  .patient-dashboard-grid { grid-template-columns: 1fr; }
+  .assessment-acc-header { grid-template-columns: 56px 1fr; }
+  .assessment-acc-body { padding: 14px 16px; }
+}

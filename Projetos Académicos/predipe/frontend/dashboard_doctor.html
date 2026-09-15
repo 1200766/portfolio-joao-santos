@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CDSS — Dashboard Médico</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .search-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .search-bar input {
+      max-width: 320px;
+      margin: 0;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 64px 32px;
+      color: var(--slate-light);
+    }
+    .empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(15,31,61,.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200;
+      backdrop-filter: blur(4px);
+    }
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: var(--shadow-lg);
+      animation: fadeUp .25s ease;
+    }
+    .modal h2 { margin-bottom: 20px; }
+    .modal-footer {
+      display: flex; gap: 10px; justify-content: flex-end;
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a class="navbar-brand" href="#">
+    <div class="logo-mark">PE</div>
+    <div>
+      <span>PrediPE</span>
+      <small>CDSS · Pré-eclâmpsia</small>
+    </div>
+  </a>
+  <div class="navbar-right">
+    <div class="navbar-user">
+      <strong id="navName">—</strong>
+      Médico
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">Sair</button>
+  </div>
+</nav>
+
+<!-- Conteúdo -->
+<div class="container" style="padding-top:32px;padding-bottom:48px;">
+
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div>
+        <h1>Os meus pacientes</h1>
+        <p style="margin-top:4px;">Gestão e monitorização de risco de pré-eclâmpsia</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerta -->
+  <div id="pageAlert" class="alert hidden" style="margin-bottom:20px;"></div>
+
+  <!-- Pesquisa -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Pesquisar por nome..." oninput="filterPatients()" />
+    <span id="patientCount" style="font-size:.85rem;color:var(--slate-light);white-space:nowrap;"></span>
+  </div>
+
+  <!-- Tabela -->
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="data-table" id="patientsTable">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Data de nascimento</th>
+          <th>Paridade</th>
+          <th>Última avaliação</th>
+          <th>Risco atual</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="patientsBody">
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <div class="empty-icon">⏳</div>
+              <p>A carregar pacientes...</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Modal: nova paciente -->
+<script>
+const API = "http://127.0.0.1:8000";
+let allPatients = [];
+
+// ── Autenticação ──
+function getToken() { return sessionStorage.getItem("token"); }
+
+function logout() {
+  sessionStorage.clear();
+  window.location.href = "login.html";
+}
+
+// ── Inicialização ──
+window.addEventListener("DOMContentLoaded", () => {
+  const name = sessionStorage.getItem("userName");
+  const role = sessionStorage.getItem("role");
+  if (!name || role !== "doctor") {
+    window.location.href = "login.html";
+    return;
+  }
+  document.getElementById("navName").textContent = name;
+  loadPatients();
+});
+
+// ── Carregar pacientes ──
+async function loadPatients() {
+  try {
+    const res  = await fetch(`${API}/patients`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    allPatients = data;
+    renderTable(allPatients);
+  } catch (e) {
+    showPageAlert("Não foi possível carregar os pacientes.", "error");
+  }
+}
+
+function renderTable(patients) {
+  const tbody = document.getElementById("patientsBody");
+  document.getElementById("patientCount").textContent = `${patients.length} paciente(s)`;
+
+  if (patients.length === 0) {
+    tbody.innerHTML = `
+      <tr><td colspan="6">
+        <div class="empty-state">
+          <div class="empty-icon">🤱</div>
+          <p>Ainda não tem pacientes registadas.</p>
+        </div>
+      </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = patients.map((p, index) => {
+    const riskLevel = ["baixo", "moderado", "alto"].includes(p.last_risk_level)
+      ? p.last_risk_level
+      : null;
+    const riskBadge = riskLevel
+      ? `<span class="badge badge-${riskLevel}">${riskEmoji(riskLevel)} ${riskLevel}</span>`
+      : `<span class="badge badge-neutral">Sem avaliação</span>`;
+
+    const lastDate = p.last_assessment_date
+      ? new Date(p.last_assessment_date).toLocaleDateString("pt-PT")
+      : "—";
+
+    const displayName = String(p.full_name || p.patient_code || "");
+
+    return `
+      <tr data-patient-index="${index}">
+        <td><strong>${escapeHtml(displayName)}</strong></td>
+        <td>${formatDate(p.date_of_birth)}</td>
+        <td>${escapeHtml(p.parity ?? "—")}</td>
+        <td style="color:var(--slate)">${lastDate}</td>
+        <td>${riskBadge}</td>
+        <td><button class="btn btn-outline btn-sm" data-view-patient>Ver ficha →</button></td>
+      </tr>`;
+  }).join("");
+
+  tbody.querySelectorAll("tr[data-patient-index]").forEach(row => {
+    const patient = patients[Number(row.dataset.patientIndex)];
+    const open = () => openPatient(
+      patient.id,
+      String(patient.full_name || patient.patient_code || ""),
+    );
+    row.addEventListener("click", open);
+    row.querySelector("[data-view-patient]").addEventListener("click", event => {
+      event.stopPropagation();
+      open();
+    });
+  });
+}
+
+// ── Filtro de pesquisa ──
+function filterPatients() {
+  const q = document.getElementById("searchInput").value.toLowerCase();
+  renderTable(allPatients.filter(p =>
+    (p.full_name || p.patient_code || "").toLowerCase().includes(q)
+  ));
+}
+
+// ── Navegar para ficha ──
+function openPatient(id, code) {
+  sessionStorage.setItem("currentPatientId", id);
+  if (code) sessionStorage.setItem("currentPatientCode", code);
+  window.location.href = "patient.html";
+}
+
+// ── Utilitários ──
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
+  })[char]);
+}
+
+function riskEmoji(level) {
+  return { baixo: "🟢", moderado: "🟡", alto: "🔴" }[level] ?? "";
+}
+function formatDate(iso) {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleDateString("pt-PT");
+}
+function showPageAlert(msg, type = "error") {
+  const el = document.getElementById("pageAlert");
+  el.textContent = msg;
+  el.className = `alert alert-${type}`;
+  el.classList.remove("hidden");
+  setTimeout(() => el.classList.add("hidden"), 4000);
+}
+</script>
+
+</body>
+</html>

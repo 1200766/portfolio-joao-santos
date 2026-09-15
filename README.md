@@ -9,6 +9,24 @@ Site: [joao-santos-biomedica.joaprs.chatgpt.site](https://joao-santos-biomedica.
 
 Repositório: [github.com/1200766/portfolio-joao-santos](https://github.com/1200766/portfolio-joao-santos)
 
+## Como navegar neste repositório
+
+Este repositório reúne dois componentes relacionados, mas distintos: o código
+que constrói o site público e uma coleção curada dos projetos apresentados no
+portefólio.
+
+| Área | Onde consultar |
+|---|---|
+| Site publicado | [joao-santos-biomedica.joaprs.chatgpt.site](https://joao-santos-biomedica.joaprs.chatgpt.site) |
+| Código do site | [`app/`](app/), [`worker/`](worker/) e [`tests/`](tests/) |
+| Projetos académicos | [Abrir a coleção](<Projetos Académicos/>) |
+| Projetos pessoais | [Abrir a coleção](<Projetos Pessoais/>) |
+
+As pastas de projetos são artefactos consultáveis diretamente no GitHub.
+Acrescentar uma pasta ao repositório não cria automaticamente uma página ou
+uma ligação no site: os projetos apresentados na interface continuam definidos
+em `app/data/projects.ts`.
+
 ## O que este repositório demonstra
 
 - implementação de uma aplicação Web em TypeScript e React;
@@ -20,19 +38,18 @@ Repositório: [github.com/1200766/portfolio-joao-santos](https://github.com/1200
 
 ## Estrutura do conteúdo
 
-Os projetos públicos estão definidos em `app/data/projects.ts` e separados em
-duas coleções:
+No site, os projetos públicos estão definidos em `app/data/projects.ts` e
+separados em duas coleções:
 
 - **projetos pessoais**, com autoria individual e responsabilidade direta pela
   publicação;
 - **projetos académicos e curriculares**, com o contexto, o tipo de autoria, a
   evidência disponível e os limites de cada resultado.
 
-O MediBrain é também apresentado como experiência curricular em destaque. Os
-casos académicos publicados neste site são apenas resumos sanitizados. Código,
-relatórios, dados e materiais originais de equipa não fazem parte deste
-repositório e só poderão ser ligados depois de uma revisão individual de
-confidencialidade, dados pessoais, metadados, licenças e direitos.
+O MediBrain é também apresentado como experiência curricular em destaque. Este
+repositório inclui, em `Projetos Académicos/` e `Projetos Pessoais/`, apenas as
+versões públicas curadas que concluíram a respetiva revisão. Os arquivos
+originais, dados privados e materiais excluídos permanecem fora do repositório.
 
 Projetos privados ou ainda sem uma decisão explícita de publicação são omitidos
 deliberadamente.
@@ -48,6 +65,8 @@ deliberadamente.
 | `lib/sites-vite-plugin.ts` | empacotamento da configuração de Sites no artefacto compilado |
 | `worker/index.ts` | entrada Cloudflare Worker e cabeçalhos de segurança |
 | `tests/rendered-html.test.mjs` | contratos públicos sobre HTML, privacidade e ativos |
+| `Projetos Académicos/` | artefactos públicos curados dos projetos académicos |
+| `Projetos Pessoais/` | artefactos públicos curados dos projetos pessoais |
 
 O projeto usa Next.js através de Vinext e é compilado para um Cloudflare Worker.
 A configuração de OpenAI Sites permanece em `.openai/hosting.json`; esse ficheiro

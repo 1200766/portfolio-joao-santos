@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pimed-atlas"
+version = "0.1.0"
+description = "Reconstrução técnica individual do projeto académico ATLAS"
+readme = "README.md"
+authors = [{ name = "João Santos" }]
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26,<3",
+  "scipy>=1.14,<2",
+  "scikit-image>=0.24,<1",
+]
+
+[project.optional-dependencies]
+vtk = ["vtk>=9.3,<10"]
+
+[project.scripts]
+pimed-atlas = "pimed_atlas.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
