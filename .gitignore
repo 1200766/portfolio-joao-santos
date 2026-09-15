@@ -12,11 +12,13 @@
 
 # testing
 /coverage
+**/coverage/
 
 # next.js
 /.next/
 /.vinext/
 /out/
+**/out/
 
 # misc
 .DS_Store
@@ -43,6 +45,11 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+**/dist/
+**/build/
+**/.sites-runtime/
+**/outputs/
+**/work/
 
 # nested project workspaces and generated files
 **/node_modules/

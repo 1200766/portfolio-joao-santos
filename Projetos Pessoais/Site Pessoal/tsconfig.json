@@ -30,9 +30,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": [
-    "node_modules",
-    "Projetos Académicos",
-    "Projetos Pessoais"
-  ]
+  "exclude": ["node_modules"]
 }

@@ -13,6 +13,9 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: Projetos Pessoais/Site Pessoal
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,6 +25,7 @@ jobs:
         with:
           node-version: 22.13.0
           cache: npm
+          cache-dependency-path: Projetos Pessoais/Site Pessoal/package-lock.json
 
       - name: Install locked dependencies
         run: npm ci

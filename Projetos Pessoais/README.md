@@ -2,9 +2,15 @@
 
 [← Voltar ao portefólio](../README.md)
 
-Esta área reunirá as versões públicas curadas dos projetos desenvolvidos
-individualmente por João Santos. Cada projeto será acrescentado apenas depois
-da revisão de dados pessoais, configuração, imagens e histórico.
+Esta área reúne as versões públicas curadas dos projetos desenvolvidos
+individualmente por João Santos. Cada projeto é acrescentado apenas depois da
+revisão de dados pessoais, configuração, imagens e histórico.
+
+## Publicado
+
+| Projeto | Descrição |
+|---|---|
+| [Site Pessoal](<Site Pessoal/>) | Código do portefólio profissional publicado na Web |
 
 ## Em preparação
 
