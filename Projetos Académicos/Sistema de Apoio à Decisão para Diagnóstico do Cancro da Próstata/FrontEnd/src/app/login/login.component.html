@@ -1,0 +1,23 @@
+<main class="container">
+  <div class="container-card">
+    <h3>Bem-vindo ao Sistema de Apoio à Decisão para Diagnóstico do Cancro da Próstata</h3>
+    <img src="../../assets/logo.png" alt="Logótipo do Sistema de Apoio à Decisão para Diagnóstico do Cancro da Próstata" class="logo" />
+
+    <form (ngSubmit)="login()">
+      <div class="form-group">
+        <label for="identificador">Email ou Username:</label>
+        <input type="text" id="identificador" [(ngModel)]="identificador" name="email" />
+      </div>
+      <div class="form-group" style="margin-top: 5%;">
+        <label for="password">Password:</label>
+        <input type="password" id="password" [(ngModel)]="password" name="password" />
+      </div>
+
+      <!-- MENSAGEM DE ERRO -->
+      <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+
+  </div>
+</main>

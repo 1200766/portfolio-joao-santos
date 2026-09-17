@@ -1,0 +1,68 @@
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 40%;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.container-card h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+.logo {
+  width:20%;
+  height: 20%;
+  object-fit:contain;
+ 
+ 
+}
+
+
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-bottom: 1rem;
+
+}
+
+.form-group label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.form-group input {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  
+}
+
+button.btn-primary {
+  background-color: #007bff;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  margin-bottom: 5%;
+}
+
+button.btn-primary:hover {
+  background-color: #0056b3;
+}

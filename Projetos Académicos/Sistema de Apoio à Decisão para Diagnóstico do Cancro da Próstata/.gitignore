@@ -1,0 +1,30 @@
+# Sistema e editores
+.DS_Store
+._*
+~$*
+.vscode/
+
+# Dependências, caches, builds e resultados de testes
+node_modules/
+.angular/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+*.log
+
+# Configuração e dados locais
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+data/
+dados/
+backups/
+dump/
+
+# O relatório original foi expressamente selecionado
+!Relatorio.pdf

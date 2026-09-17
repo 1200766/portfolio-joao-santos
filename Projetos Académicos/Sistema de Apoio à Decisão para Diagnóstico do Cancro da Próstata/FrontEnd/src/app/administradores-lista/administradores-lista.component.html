@@ -1,0 +1,270 @@
+<header class="main-header">
+    <h5>Sistema de Apoio à Decisão para Diagnóstico do Cancro da Próstata</h5>
+
+    <nav class="nav-menu">
+        <a routerLink="/administradores-lista" class="active">Administradores</a>
+
+        <a routerLink="/utentes-lista">Utentes</a>
+        <a routerLink="/medicos-lista">Médicos</a>
+    </nav>
+
+  <div class="user-info">
+    <span class="user-icon" (click)="toggleMenu()">
+      <i class="fas fa-user-circle"></i>
+    </span>
+    <span *ngIf="user">{{ user.nome }}</span>
+
+    <div class="dropdown-menu" [class.show]="showMenu">
+      <button (click)="logout()">
+        <i class="fas fa-sign-out-alt" style="margin-right: 6px;"></i> Sair
+      </button>
+    </div>
+  </div>
+</header>
+
+
+<main class="container">
+    <div class="container-card">
+        <div class="search-bar">
+            <div class="search-field">
+                <label for="filtroNome">Nome:</label>
+                <input id="filtroNome" type="text" placeholder="Pesquisar por nome" [(ngModel)]="filtroNome" />
+            </div>
+
+            <div class="insert-button">
+                <button type="button" class="btn btn-primary" (click)="abrirInsertModal()">Inserir Novo
+                    Administrador</button>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Contacto</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users | filterAdministradores:filtroNome">
+                    <td>{{ user.nome }}</td>
+                    <td>{{ user.contacto }}</td>
+                    <td class="actions">
+                        <i class="fas fa-edit text-success" title="Editar" (click)="abrirEditModal(user)"></i>
+                        <i class="fas fa-trash text-danger" title="Eliminar" (click)="delete(user)"></i>
+                        <i class="fas fa-eye text-dark" title="Ver Mais" (click)="abrirViewModal(user)"></i>
+                    </td>
+
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- View Modal -->
+<div class="modal" [class.show]="showViewModal">
+    <div class="modal-content">
+        <h3 class="modal-title">Detalhes do Administrador</h3>
+        <hr />
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Nome:</label>
+                <input type="text" [value]="userVisualizar.nome" disabled />
+            </div>
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" [value]="userVisualizar.username" disabled />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="text" [value]="userVisualizar.email" disabled />
+        </div>
+
+        <div class="form-row">
+
+            <div class="form-group">
+                <label>Data de Nascimento:</label>
+                <input type="date" [value]="userVisualizar.nascimento" disabled />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Contacto:</label>
+                <input type="text" [value]="userVisualizar.contacto" disabled />
+            </div>
+            <div class="form-group">
+                <label>Género:</label>
+                <input type="text" [value]="userVisualizar.genero" disabled />
+            </div>
+        </div>
+
+
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" (click)="fecharViewModal()">Fechar</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Insert Modal -->
+<div class="modal" [class.show]="showInsertModal">
+    <div class="modal-content">
+        <h3 class="modal-title">Inserir Novo Administrador</h3>
+        <hr />
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Nome:</label>
+                <input type="text" [(ngModel)]="novoUser.nome" #nome="ngModel" required class="form-control"
+                    [class.is-invalid]="submitted && !novoUser.nome">
+                <div *ngIf="submitted && !novoUser.nome" class="invalid-feedback">
+                    Nome é obrigatório.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" [(ngModel)]="novoUser.username" (ngModelChange)="verificarUsername()"
+                    required class="form-control"
+                    [class.is-invalid]="submitted && (!novoUser.username || usernameExistente)" />
+
+                <div *ngIf="submitted && !novoUser.username" class="invalid-feedback">
+                    O username é obrigatório.
+                </div>
+                <div *ngIf="submitted && usernameExistente" class="invalid-feedback">
+                    Este username já está em uso.
+                </div>
+            </div>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" [(ngModel)]="novoUser.email" required class="form-control"
+                [class.is-invalid]="submitted && !isEmailValido()" />
+            <div *ngIf="submitted && !novoUser.email" class="invalid-feedback">
+                O email é obrigatório.
+            </div>
+            <div *ngIf="submitted && novoUser.email && !isEmailValido()" class="invalid-feedback">
+                O formato do email é inválido.
+            </div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" [(ngModel)]="novoUser.password" required class="form-control"
+                [class.is-invalid]="submitted && !isPasswordValida()" />
+            <div *ngIf="submitted && !novoUser.password" class="invalid-feedback">
+                A password é obrigatória.
+            </div>
+            <div *ngIf="submitted && novoUser.password && !isPasswordValida()" class="invalid-feedback">
+                A password deve ter pelo menos 6 caracteres.
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group">
+            <label>Data de Nascimento:</label>
+            <input type="date" [(ngModel)]="novoUser.nascimento" class="form-control"
+                [class.is-invalid]="submitted && !isDataNascimentoValida()">
+            <div *ngIf="submitted && !isDataNascimentoValida()" class="invalid-feedback">
+                A data de nascimento deve ser anterior à data atual.
+            </div>
+        </div>
+
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Contacto:</label>
+                <input type="text" [(ngModel)]="novoUser.contacto" #contacto="ngModel" class="form-control"
+                    [class.is-invalid]="submitted && !isContactoValido()">
+                <div *ngIf="submitted && !isContactoValido()" class="invalid-feedback">
+                    O contacto deve ter 9 dígitos numéricos.
+                </div>
+            </div>
+            <!-- GÉNERO -->
+            <div class="form-group">
+                <label for="genero">Género:</label>
+                <select id="genero" [(ngModel)]="novoUser.genero" required class="form-control"
+                    [class.is-invalid]="submitted && !novoUser.genero">
+                    <option value="" disabled selected>Selecione o género</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                </select>
+                <div *ngIf="submitted && !novoUser.genero" class="invalid-feedback">
+                    O género é obrigatório.
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" (click)="fecharInsertModal()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="guardarNovoUser()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Edit Modal -->
+<div class="modal" [class.show]="showModal">
+    <div class="modal-content">
+        <h3 class="modal-title">Editar Administrador</h3>
+        <hr />
+
+        <!-- Nome -->
+        <div class="form-group">
+            <label>Nome:</label>
+            <input type="text" [(ngModel)]="userSelecionado.nome" #nome="ngModel" required class="form-control"
+                [class.is-invalid]="submitted && !userSelecionado.nome">
+            <div *ngIf="submitted && !userSelecionado.nome" class="invalid-feedback">
+                Nome é obrigatório.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Contacto:</label>
+            <input type="text" [(ngModel)]="userSelecionado.contacto" class="form-control"
+                [class.is-invalid]="submitted && !isContactoValidoEdicao()" />
+            <div *ngIf="submitted && !isContactoValidoEdicao()" class="invalid-feedback">
+                O contacto deve ter exatamente 9 dígitos numéricos.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Data de Nascimento:</label>
+            <input type="date" [(ngModel)]="userSelecionado.nascimento" class="form-control"
+                [class.is-invalid]="submitted && !isDataNascimentoValidaEdicao()" />
+            <div *ngIf="submitted && !isDataNascimentoValidaEdicao()" class="invalid-feedback">
+                A data de nascimento deve ser anterior à data atual.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="genero">Género:</label>
+            <select id="genero" [(ngModel)]="userSelecionado.genero" required class="form-control"
+                [class.is-invalid]="submitted && !userSelecionado.genero">
+                <option value="" disabled selected>Selecione o género</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+            </select>
+            <div *ngIf="submitted && !userSelecionado.genero" class="invalid-feedback">
+                O género é obrigatório.
+            </div>
+        </div>
+
+        <!-- Ações -->
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" (click)="fecharEditModal()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="guardarEdicao()">Guardar</button>
+        </div>
+    </div>
+</div>

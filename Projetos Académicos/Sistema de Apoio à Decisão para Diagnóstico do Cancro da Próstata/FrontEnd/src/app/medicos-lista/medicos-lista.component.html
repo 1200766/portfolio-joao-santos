@@ -1,0 +1,324 @@
+<header class="main-header">
+    <h5>Sistema de Apoio à Decisão para Diagnóstico do Cancro da Próstata</h5>
+
+    <nav class="nav-menu">
+        <a routerLink="/administradores-lista">Administradores</a>
+
+        <a routerLink="/utentes-lista">Utentes</a>
+        <a href="#" class="active">Médicos</a>
+    </nav>
+  <div class="user-info">
+    <span class="user-icon" (click)="toggleMenu()">
+      <i class="fas fa-user-circle"></i>
+    </span>
+    <span *ngIf="user">{{ user.nome }}</span>
+
+    <div class="dropdown-menu" [class.show]="showMenu">
+      <button (click)="logout()">
+        <i class="fas fa-sign-out-alt" style="margin-right: 6px;"></i> Sair
+      </button>
+    </div>
+  </div>
+</header>
+
+
+<main class="container">
+    <div class="container-card">
+        <div class="search-bar">
+            <div class="search-field">
+                <label for="filtroNome">Nome:</label>
+                <input id="filtroNome" type="text" placeholder="Pesquisar por nome" [(ngModel)]="filtroNome" />
+            </div>
+            <div class="search-field">
+                <label for=" filtroSpeciality">Especialidade:</label>
+                <select [(ngModel)]="filtroSpeciality">
+                    <option value="" disabled selected>Selecione uma especialidade</option>
+                    <option value="todas" id="filtroSpeciality">Todas</option>
+                    <option value="Cardiologia" id="filtroSpeciality">Cardiologia</option>
+                    <option value="Urologia" id="filtroSpeciality">Urologia</option>
+                    <option value="Ortopedia" id="filtroSpeciality">Ortopedia</option>
+                    <option value="Neurologia" id="filtroSpeciality">Neurologia</option>
+                    <option value="Endocrinologia" id="filtroSpeciality">Endocrinologia</option>
+                    <option value="Oncologia" id="filtroSpeciality">Oncologia</option>
+                    <option value="Medicina Nuclear" id="filtroSpeciality">Medicina Nuclear</option>
+                    <option value="Medicina Geral e Familiar" id="filtroSpeciality">Medicina Geral e Familiar</option>
+                    <option value="Patologia" id="filtroSpeciality">Patologia</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="insert-button">
+                <button type="button" class="btn btn-primary" (click)="abrirInsertModal()">Inserir Novo Médico</button>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Especialidade</th>
+                    <th>Contacto</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let medico of medicos |filterMedicos:filtroNome:filtroSpeciality">
+                    <td>{{ medico.nome }}</td>
+                    <td>{{ medico.specialty }}</td>
+                    <td>{{ medico.contacto }}</td>
+                    <td class="actions">
+                        <i class="fas fa-edit text-success" title="Editar" (click)="abrirEditModal(medico)"></i>
+                        <i class="fas fa-trash text-danger" title="Eliminar" (click)="delete(medico)"></i>
+                        <i class="fas fa-eye text-dark" title="Ver Mais" (click)="abrirViewModal(medico)"></i>
+                    </td>
+
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+
+<!-- View Modal -->
+<div class="modal" [class.show]="showViewModal">
+    <div class="modal-content">
+        <h3 class="modal-title">Detalhes do Médico</h3>
+        <hr />
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Nome:</label>
+                <input type="text" [value]="medicoVisualizar.nome" disabled />
+            </div>
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" [value]="medicoVisualizar.username" disabled />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="text" [value]="medicoVisualizar.email" disabled />
+        </div>
+
+        <div class="form-row">
+
+            <div class="form-group">
+                <label>Data de Nascimento:</label>
+                <input type="date" [value]="medicoVisualizar.nascimento" disabled />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Contacto:</label>
+                <input type="text" [value]="medicoVisualizar.contacto" disabled />
+            </div>
+            <div class="form-group">
+                <label>Género:</label>
+                <input type="text" [value]="medicoVisualizar.genero" disabled />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Médico:</label>
+            <input type="text" [value]="medicoVisualizar.specialty" disabled />
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" (click)="fecharViewModal()">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Insert Modal -->
+<div class="modal" [class.show]="showInsertModal">
+    <div class="modal-content">
+        <h3 class="modal-title">Inserir Novo Médico</h3>
+        <hr />
+        <div class="form-group">
+            <label>Nome:</label>
+            <input type="text" [(ngModel)]="novoMedico.nome" #nome="ngModel" required class="form-control"
+                [class.is-invalid]="submitted && !novoMedico.nome">
+            <div *ngIf="submitted && !novoMedico.nome" class="invalid-feedback">
+                Nome é obrigatório.
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" [(ngModel)]="novoMedico.username" (ngModelChange)="verificarUsername()"
+                required class="form-control"
+                [class.is-invalid]="submitted && (!novoMedico.username || usernameExistente)" />
+
+            <div *ngIf="submitted && !novoMedico.username" class="invalid-feedback">
+                O username é obrigatório.
+            </div>
+            <div *ngIf="submitted && usernameExistente" class="invalid-feedback">
+                Este username já está em uso.
+            </div>
+        </div>
+
+
+        <!-- EMAIL -->
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" [(ngModel)]="novoMedico.email" required class="form-control"
+                [class.is-invalid]="submitted && !isEmailValido()" />
+            <div *ngIf="submitted && !novoMedico.email" class="invalid-feedback">
+                O email é obrigatório.
+            </div>
+            <div *ngIf="submitted && novoMedico.email && !isEmailValido()" class="invalid-feedback">
+                O formato do email é inválido.
+            </div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" [(ngModel)]="novoMedico.password" required class="form-control"
+                [class.is-invalid]="submitted && !isPasswordValida()" />
+            <div *ngIf="submitted && !novoMedico.password" class="invalid-feedback">
+                A password é obrigatória.
+            </div>
+            <div *ngIf="submitted && novoMedico.password && !isPasswordValida()" class="invalid-feedback">
+                A password deve ter pelo menos 6 caracteres.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Data de Nascimento:</label>
+            <input type="date" [(ngModel)]="novoMedico.nascimento" class="form-control"
+                [class.is-invalid]="submitted && !isDataNascimentoValida()">
+            <div *ngIf="submitted && !isDataNascimentoValida()" class="invalid-feedback">
+                A data de nascimento deve ser anterior à data atual.
+            </div>
+        </div>
+
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Contacto:</label>
+                <input type="text" [(ngModel)]="novoMedico.contacto" #contacto="ngModel" class="form-control"
+                    [class.is-invalid]="submitted && !isContactoValido()">
+                <div *ngIf="submitted && !isContactoValido()" class="invalid-feedback">
+                    O contacto deve ter 9 dígitos numéricos.
+                </div>
+            </div>
+            <!-- GÉNERO -->
+            <div class="form-group">
+                <label for="genero">Género:</label>
+                <select id="genero" [(ngModel)]="novoMedico.genero" required class="form-control"
+                    [class.is-invalid]="submitted && !novoMedico.genero">
+                    <option value="" disabled selected>Selecione o género</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                </select>
+                <div *ngIf="submitted && !novoMedico.genero" class="invalid-feedback">
+                    O género é obrigatório.
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Especialidade:</label>
+            <select [(ngModel)]="novoMedico.specialty" required class="form-control"
+                [class.is-invalid]="submitted && !novoMedico.specialty">
+                <option value="" disabled selected>Selecione uma especialidade</option>
+                <option value="Cardiologia">Cardiologia</option>
+                <option value="Urologia">Urologia</option>
+                <option value="Ortopedia">Ortopedia</option>
+                <option value="Neurologia">Neurologia</option>
+                <option value="Endocrinologia">Endocrinologia</option>
+                <option value="Oncologia">Oncologia</option>
+                <option value="Medicina Nuclear">Medicina Nuclear</option>
+                <option value="Medicina Geral e Familiar">Medicina Geral e Familiar</option>
+                <option value="Patologia">Patologia</option>
+
+            </select>
+            <div *ngIf="submitted && !novoMedico.specialty" class="invalid-feedback">
+                A especialidade é obrigatória.
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" (click)="fecharInsertModal()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="guardarNovoMedico()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Edit Modal -->
+<div class="modal" [class.show]="showModal">
+    <div class="modal-content">
+        <h3 class="modal-title">Editar Médico</h3>
+        <hr />
+
+        <!-- Nome -->
+        <div class="form-group">
+            <label>Nome:</label>
+            <input type="text" [(ngModel)]="medicoSelecionado.nome" #nome="ngModel" required class="form-control"
+                [class.is-invalid]="submitted && !medicoSelecionado.nome">
+            <div *ngIf="submitted && !medicoSelecionado.nome" class="invalid-feedback">
+                Nome é obrigatório.
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Contacto:</label>
+            <input type="text" [(ngModel)]="medicoSelecionado.contacto" class="form-control"
+                [class.is-invalid]="submitted && !isContactoValidoEdicao()" />
+            <div *ngIf="submitted && !isContactoValidoEdicao()" class="invalid-feedback">
+                O contacto deve ter exatamente 9 dígitos numéricos.
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Data de Nascimento:</label>
+            <input type="date" [(ngModel)]="medicoSelecionado.nascimento" class="form-control"
+                [class.is-invalid]="submitted && !isDataNascimentoValidaEdicao()" />
+            <div *ngIf="submitted && !isDataNascimentoValidaEdicao()" class="invalid-feedback">
+                A data de nascimento deve ser anterior à data atual.
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="genero">Género:</label>
+            <select id="genero" [(ngModel)]="medicoSelecionado.genero" required class="form-control"
+                [class.is-invalid]="submitted && !medicoSelecionado.genero">
+                <option value="" disabled selected>Selecione o género</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+            </select>
+            <div *ngIf="submitted && !medicoSelecionado.genero" class="invalid-feedback">
+                O género é obrigatório.
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Especialidade:</label>
+            <select [(ngModel)]="medicoSelecionado.specialty" required class="form-control"
+                [class.is-invalid]="submitted && !medicoSelecionado.specialty">>
+                <option value="" disabled selected>Selecione uma especialidade</option>
+                <option value="Cardiologia">Cardiologia</option>
+                <option value="Urologia">Urologia</option>
+                <option value="Ortopedia">Ortopedia</option>
+                <option value="Neurologia">Neurologia</option>
+                <option value="Endocrinologia">Endocrinologia</option>
+                <option value="Oncologia">Oncologia</option>
+                <option value="Medicina Nuclear">Medicina Nuclear</option>
+                <option value="Medicina Geral e Familiar">Medicina Geral e Familiar</option>
+                <option value="Patologia">Patologia</option>
+
+            </select>
+            <div *ngIf="submitted && !medicoSelecionado.specialty" class="invalid-feedback">
+                A especialidade é obrigatória.
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" (click)="fecharEditModal()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="guardarEdicao()">Guardar</button>
+        </div>
+    </div>
+</div>

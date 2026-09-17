@@ -1,0 +1,274 @@
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+}
+
+.dropdown-menu button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #333;
+}
+
+.search-bar {
+    display: flex;
+    gap: 1.25em;
+    /* equivalente a 20px aproximadamente */
+    margin-bottom: 0.9375em;
+    /* 15px */
+    align-items: center;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.insert-button {
+    margin-left: auto;
+}
+
+.search-field {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+}
+
+.search-field input,
+.search-field select {
+    width: 100%;
+    padding: 0.375em 0.5em;
+    /* 6px 8px */
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+
+.main-header {
+    background-color: #1E3A8A;
+    color: white;
+    padding: 1em 2em;
+    justify-content: space-between;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 2em;
+    align-items: center; 
+}
+
+.nav-menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: 500;
+    position: relative;
+    padding: 0.25em 0;
+    .nav-menu a {
+    display: flex;
+    align-items: center;
+    height: 100%;       /* opcional, mas útil em headers mais altos */
+}
+
+}
+
+.nav-menu a.active::after,
+.nav-menu a:hover::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #a5d8ff;
+    border-radius: 2px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-weight: 500;
+}
+
+.user-icon {
+    font-size: 1.5em;
+    color: #a5d8ff;
+}
+
+
+main {
+    padding: 2em;
+}
+
+.actions i {
+    margin-right: 0.625em;
+    /* 10px */
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.actions i:hover {
+    color: #0d6efd;
+}
+
+.container-card {
+    background-color: white;
+    border-radius: 0.75em;
+    /* 12px */
+    padding: 2em;
+    box-shadow: 0 0.25em 0.625em rgba(0, 0, 0, 0.06);
+    /* 4px 10px */
+}
+
+.centered-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.centered-cell .btn {
+    margin: auto;
+    display: block;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+    display: block;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 1rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.modal-content label {
+    font-weight: 500;
+    margin-bottom: none;
+    font-size: 0.9rem;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="date"],
+.form-group input[type="time"],
+.modal-content select {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.modal-content .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.modal-content .form-grid-full {
+    grid-column: span 2;
+}
+
+
+.modal-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.modal-content hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin-top: 0rem;
+}
+
+
+
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    /* espaçamento entre os campos */
+}
+
+.form-group {
+    flex: 1;
+    /* faz os campos ocuparem mesmo espaço */
+    display: flex;
+    flex-direction: column;
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 400;
+    font-size: 0.95rem;
+}
+
+.modal-actions {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 1rem;
+}
+
+.modal-actions button {
+    padding: 0.5rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.modal-actions .btn-secondary {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.modal-actions .btn-secondary:hover {
+    background-color: #ccc;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1e40af;
+}

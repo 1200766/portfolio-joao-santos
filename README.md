@@ -8,7 +8,7 @@ o contexto, os artefactos disponíveis e as respetivas limitações.
 
 | Área | Conteúdo |
 |---|---|
-| [Projetos Académicos](<Projetos Académicos/>) | Nove projetos académicos e curriculares em versões públicas curadas |
+| [Projetos Académicos](<Projetos Académicos/>) | Dez projetos académicos e curriculares em versões públicas curadas |
 | [Projetos Pessoais](<Projetos Pessoais/>) | Projetos individuais, incluindo o código do site pessoal |
 
 O site pessoal está publicado em
