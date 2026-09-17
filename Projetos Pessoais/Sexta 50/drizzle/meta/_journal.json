@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1784746481102,
+      "tag": "0000_bizarre_cassandra_nova",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1784881688536,
+      "tag": "0001_secret_bruce_banner",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1785229628425,
+      "tag": "0002_youthful_human_cannonball",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1785234408101,
+      "tag": "0003_boring_quasar",
+      "breakpoints": true
+    }
+  ]
+}

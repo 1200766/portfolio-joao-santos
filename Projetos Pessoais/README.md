@@ -12,11 +12,14 @@ revisão de dados pessoais, configuração, imagens e histórico.
 |---|---|
 | [Site Pessoal](<Site Pessoal/>) | Código do portefólio profissional publicado na Web |
 
-## Em preparação
+## Projetos publicados
+
+Estas exportações públicas foram preparadas com revisão individual de dados,
+configuração, autoria, direitos e validação técnica.
 
 | Projeto | Descrição |
 |---|---|
-| Sobe e Desce | Aplicação iOS offline para gerir partidas do jogo |
-| Finanças Pessoais | Aplicação iOS local de gestão e simulação financeira |
-| Sexta 50 | Aplicação Web de apoio à gestão semanal de participantes, pagamentos e sorteio |
-| Gestor de Roupa | Aplicação Web de inventário pessoal; fotografias e dados reais ficam fora da versão pública |
+| [Sobe e Desce](<Sobe e Desce/>) | Aplicação iOS offline para gerir partidas do jogo |
+| [Finanças Pessoais](<Finanças Pessoais/>) | Aplicação iOS local de gestão e simulação financeira, com exemplos sintéticos |
+| [Sexta 50](<Sexta 50/>) | Aplicação Web de apoio à gestão semanal de participantes, confirmações e apuramento, sem integração de pagamentos |
+| [Gestor de Roupa](<Gestor de Roupa/>) | Aplicação Web de inventário pessoal com edição apenas no navegador |

@@ -1,0 +1,735 @@
+[
+  {
+    "id": "body-stradivarius-1",
+    "sortOrder": 1,
+    "name": "Body Stradivarius 1",
+    "folderName": "Body Stradivarius 1",
+    "type": "Body",
+    "brand": "Stradivarius",
+    "size": "L",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/body-stradivarius-1/01.jpg",
+      "/roupa/body-stradivarius-1/02.jpg",
+      "/roupa/body-stradivarius-1/03.jpg"
+    ]
+  },
+  {
+    "id": "calcas-stradivarius",
+    "sortOrder": 2,
+    "name": "Calças Stradivarius",
+    "folderName": "Calças Stradivarius",
+    "type": "Calças",
+    "brand": "Pull&Bear",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/calcas-stradivarius/01.jpg",
+      "/roupa/calcas-stradivarius/02.jpg",
+      "/roupa/calcas-stradivarius/03.jpg"
+    ]
+  },
+  {
+    "id": "camisola-pull-e-bear-1",
+    "sortOrder": 3,
+    "name": "Camisola Pull&Bear 1",
+    "folderName": "Camisola Pull&Bear 1",
+    "type": "Camisola",
+    "brand": "Pull&Bear",
+    "size": "M",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/camisola-pull-e-bear-1/01.jpg",
+      "/roupa/camisola-pull-e-bear-1/02.jpg",
+      "/roupa/camisola-pull-e-bear-1/03.jpg"
+    ]
+  },
+  {
+    "id": "camisola-stradivarius-1",
+    "sortOrder": 4,
+    "name": "Camisola Stradivarius 1",
+    "folderName": "Camisola Stradivarius 1",
+    "type": "Camisola",
+    "brand": "Stradivarius",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/camisola-stradivarius-1/01.jpg",
+      "/roupa/camisola-stradivarius-1/02.jpg",
+      "/roupa/camisola-stradivarius-1/03.jpg"
+    ]
+  },
+  {
+    "id": "camisola-zara-kids-1",
+    "sortOrder": 5,
+    "name": "Camisola Zara Kids 1",
+    "folderName": "Camisola Zara Kids 1",
+    "type": "Camisola",
+    "brand": "Zara Kids",
+    "size": "11/14",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/camisola-zara-kids-1/01.jpg",
+      "/roupa/camisola-zara-kids-1/02.jpg",
+      "/roupa/camisola-zara-kids-1/03.jpg"
+    ]
+  },
+  {
+    "id": "casaco-lefties",
+    "sortOrder": 6,
+    "name": "Casaco Lefties",
+    "folderName": "Casaco Lefties",
+    "type": "Casaco",
+    "brand": "Lefties",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/casaco-lefties/01.jpg",
+      "/roupa/casaco-lefties/02.jpg",
+      "/roupa/casaco-lefties/03.jpg"
+    ]
+  },
+  {
+    "id": "chapeu-bershka",
+    "sortOrder": 7,
+    "name": "Chapéu Bershka",
+    "folderName": "Chapéu Bershka",
+    "type": "chapéu",
+    "brand": "Bershka",
+    "size": "M/OneSize",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/chapeu-bershka/01.jpg",
+      "/roupa/chapeu-bershka/02.jpg",
+      "/roupa/chapeu-bershka/03.jpg"
+    ]
+  },
+  {
+    "id": "gabardina",
+    "sortOrder": 8,
+    "name": "Gabardina",
+    "folderName": "Gabardina ",
+    "type": "Gabardina",
+    "brand": "Stradivarius",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/gabardina/01.jpg",
+      "/roupa/gabardina/02.jpg",
+      "/roupa/gabardina/03.jpg"
+    ]
+  },
+  {
+    "id": "mala-praia-alehop",
+    "sortOrder": 9,
+    "name": "Mala Praia AleHop",
+    "folderName": "Mala Praia AleHop",
+    "type": "Mala Praia",
+    "brand": "AleHop",
+    "size": "",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/mala-praia-alehop/01.jpg",
+      "/roupa/mala-praia-alehop/02.jpg",
+      "/roupa/mala-praia-alehop/03.jpg"
+    ]
+  },
+  {
+    "id": "t-shirt-bershka-1",
+    "sortOrder": 10,
+    "name": "T-Shirt Bershka 1",
+    "folderName": "T-Shirt Bershka 1",
+    "type": "T-Shirt",
+    "brand": "Bershka",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/t-shirt-bershka-1/01.jpg",
+      "/roupa/t-shirt-bershka-1/02.jpg",
+      "/roupa/t-shirt-bershka-1/03.jpg"
+    ]
+  },
+  {
+    "id": "t-shirt-stradivarius-1",
+    "sortOrder": 11,
+    "name": "T-Shirt Stradivarius 1",
+    "folderName": "T-Shirt Stradivarius 1",
+    "type": "T-Shirt",
+    "brand": "Stradivarius",
+    "size": "M",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/t-shirt-stradivarius-1/01.jpg",
+      "/roupa/t-shirt-stradivarius-1/02.jpg",
+      "/roupa/t-shirt-stradivarius-1/03.jpg"
+    ]
+  },
+  {
+    "id": "t-shirt-tiffosi-1",
+    "sortOrder": 12,
+    "name": "T-Shirt Tiffosi 1",
+    "folderName": "T-Shirt Tiffosi 1",
+    "type": "T- Shirt",
+    "brand": "Tiffosi Woman",
+    "size": "L",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/t-shirt-tiffosi-1/01.jpg",
+      "/roupa/t-shirt-tiffosi-1/02.jpg",
+      "/roupa/t-shirt-tiffosi-1/03.jpg"
+    ]
+  },
+  {
+    "id": "t-shirt-volcom",
+    "sortOrder": 13,
+    "name": "T-Shirt Volcom",
+    "folderName": "T-Shirt Volcom",
+    "type": "T-Shirt",
+    "brand": "Volcom",
+    "size": "M",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/t-shirt-volcom/01.jpg",
+      "/roupa/t-shirt-volcom/02.jpg",
+      "/roupa/t-shirt-volcom/03.jpg"
+    ]
+  },
+  {
+    "id": "top-bershka-1",
+    "sortOrder": 14,
+    "name": "Top Bershka 1",
+    "folderName": "Top Bershka 1",
+    "type": "Top",
+    "brand": "Bershka",
+    "size": "S",
+    "price": "",
+    "condition": "Novo",
+    "photos": [
+      "/roupa/top-bershka-1/01.jpg",
+      "/roupa/top-bershka-1/02.jpg",
+      "/roupa/top-bershka-1/03.jpg"
+    ]
+  },
+  {
+    "id": "top-bershka-2",
+    "sortOrder": 15,
+    "name": "Top Bershka 2",
+    "folderName": "Top Bershka 2",
+    "type": "Top",
+    "brand": "Berskha",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-bershka-2/01.jpg",
+      "/roupa/top-bershka-2/02.jpg",
+      "/roupa/top-bershka-2/03.jpg"
+    ]
+  },
+  {
+    "id": "top-hm-1",
+    "sortOrder": 16,
+    "name": "Top HM 1",
+    "folderName": "Top HM 1",
+    "type": "Top",
+    "brand": "HM",
+    "size": "Xs",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-hm-1/01.jpg",
+      "/roupa/top-hm-1/02.jpg",
+      "/roupa/top-hm-1/03.jpg"
+    ]
+  },
+  {
+    "id": "top-pull-e-bear-1",
+    "sortOrder": 17,
+    "name": "Top Pull&Bear 1",
+    "folderName": "Top Pull&Bear 1",
+    "type": "Top",
+    "brand": "Pull&Bear",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-pull-e-bear-1/01.jpg",
+      "/roupa/top-pull-e-bear-1/02.jpg",
+      "/roupa/top-pull-e-bear-1/03.jpg"
+    ]
+  },
+  {
+    "id": "top-shein-1",
+    "sortOrder": 18,
+    "name": "Top Shein 1",
+    "folderName": "Top Shein 1",
+    "type": "Top",
+    "brand": "Shein",
+    "size": "Xs",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-shein-1/01.jpg",
+      "/roupa/top-shein-1/02.jpg",
+      "/roupa/top-shein-1/03.jpg"
+    ]
+  },
+  {
+    "id": "top-sthein-2",
+    "sortOrder": 19,
+    "name": "Top Sthein 2",
+    "folderName": "Top Sthein 2",
+    "type": "Top",
+    "brand": "Shein",
+    "size": "Xs",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-sthein-2/01.jpg",
+      "/roupa/top-sthein-2/02.jpg",
+      "/roupa/top-sthein-2/03.jpg"
+    ]
+  },
+  {
+    "id": "top-stradivarius-1",
+    "sortOrder": 20,
+    "name": "Top Stradivarius 1",
+    "folderName": "Top Stradivarius 1",
+    "type": "Top",
+    "brand": "Stradivarius",
+    "size": "M",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-stradivarius-1/01.jpg",
+      "/roupa/top-stradivarius-1/02.jpg",
+      "/roupa/top-stradivarius-1/03.jpg"
+    ]
+  },
+  {
+    "id": "top-stradivarius-2",
+    "sortOrder": 21,
+    "name": "Top Stradivarius 2",
+    "folderName": "Top Stradivarius 2",
+    "type": "Top",
+    "brand": "Stradivarius",
+    "size": "M",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-stradivarius-2/01.jpg",
+      "/roupa/top-stradivarius-2/02.jpg",
+      "/roupa/top-stradivarius-2/03.jpg"
+    ]
+  },
+  {
+    "id": "top-stradivarius-3",
+    "sortOrder": 22,
+    "name": "Top Stradivarius 3",
+    "folderName": "Top Stradivarius 3",
+    "type": "Top",
+    "brand": "Stradivarius",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-stradivarius-3/01.jpg",
+      "/roupa/top-stradivarius-3/02.jpg",
+      "/roupa/top-stradivarius-3/03.jpg"
+    ]
+  },
+  {
+    "id": "top-stradivarius-4",
+    "sortOrder": 23,
+    "name": "Top Stradivarius 4",
+    "folderName": "Top Stradivarius 4",
+    "type": "Top",
+    "brand": "Stradivarius",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-stradivarius-4/01.jpg",
+      "/roupa/top-stradivarius-4/02.jpg",
+      "/roupa/top-stradivarius-4/03.jpg"
+    ]
+  },
+  {
+    "id": "top-stradivarius-5",
+    "sortOrder": 24,
+    "name": "Top Stradivarius 5",
+    "folderName": "Top Stradivarius 5",
+    "type": "Top",
+    "brand": "Stradivarius",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-stradivarius-5/01.jpg",
+      "/roupa/top-stradivarius-5/02.jpg",
+      "/roupa/top-stradivarius-5/03.jpg"
+    ]
+  },
+  {
+    "id": "top-stradivarius-6",
+    "sortOrder": 25,
+    "name": "Top Stradivarius 6",
+    "folderName": "Top Stradivarius 6",
+    "type": "Top",
+    "brand": "Stradivarius",
+    "size": "Xs",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-stradivarius-6/01.jpg",
+      "/roupa/top-stradivarius-6/02.jpg",
+      "/roupa/top-stradivarius-6/03.jpg"
+    ]
+  },
+  {
+    "id": "top-stradivarius-7",
+    "sortOrder": 26,
+    "name": "Top Stradivarius 7",
+    "folderName": "Top Stradivarius 7",
+    "type": "Top",
+    "brand": "Stradivarius",
+    "size": "Xs",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-stradivarius-7/01.jpg",
+      "/roupa/top-stradivarius-7/02.jpg",
+      "/roupa/top-stradivarius-7/03.jpg"
+    ]
+  },
+  {
+    "id": "top-stradivarius-8",
+    "sortOrder": 27,
+    "name": "Top Stradivarius 8",
+    "folderName": "Top Stradivarius 8",
+    "type": "Top",
+    "brand": "Stradivarius",
+    "size": "Xs",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-stradivarius-8/01.jpg",
+      "/roupa/top-stradivarius-8/02.jpg",
+      "/roupa/top-stradivarius-8/03.jpg"
+    ]
+  },
+  {
+    "id": "top-zara-1",
+    "sortOrder": 28,
+    "name": "Top Zara 1",
+    "folderName": "Top Zara 1",
+    "type": "Top",
+    "brand": "Zara",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-zara-1/01.jpg",
+      "/roupa/top-zara-1/02.jpg",
+      "/roupa/top-zara-1/03.jpg",
+      "/roupa/top-zara-1/04.jpg"
+    ]
+  },
+  {
+    "id": "top-zara-2",
+    "sortOrder": 29,
+    "name": "Top Zara 2",
+    "folderName": "Top Zara 2",
+    "type": "Top",
+    "brand": "Zara",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-zara-2/01.jpg",
+      "/roupa/top-zara-2/02.jpg",
+      "/roupa/top-zara-2/03.jpg"
+    ]
+  },
+  {
+    "id": "top-zara-3",
+    "sortOrder": 30,
+    "name": "Top Zara 3",
+    "folderName": "Top Zara 3",
+    "type": "Top",
+    "brand": "Zara",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-zara-3/01.jpg",
+      "/roupa/top-zara-3/02.jpg",
+      "/roupa/top-zara-3/03.jpg"
+    ]
+  },
+  {
+    "id": "top-zara-4",
+    "sortOrder": 31,
+    "name": "Top Zara 4",
+    "folderName": "Top Zara 4",
+    "type": "Top",
+    "brand": "Zara",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-zara-4/01.jpg",
+      "/roupa/top-zara-4/02.jpg",
+      "/roupa/top-zara-4/03.jpg"
+    ]
+  },
+  {
+    "id": "top-zara-5",
+    "sortOrder": 32,
+    "name": "Top Zara 5",
+    "folderName": "Top Zara 5",
+    "type": "Top",
+    "brand": "Zara",
+    "size": "Xs",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-zara-5/01.jpg",
+      "/roupa/top-zara-5/02.jpg",
+      "/roupa/top-zara-5/03.jpg"
+    ]
+  },
+  {
+    "id": "top-zara-6",
+    "sortOrder": 33,
+    "name": "Top Zara 6",
+    "folderName": "Top Zara 6",
+    "type": "Top",
+    "brand": "Zara",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-zara-6/01.jpg",
+      "/roupa/top-zara-6/02.jpg",
+      "/roupa/top-zara-6/03.jpg"
+    ]
+  },
+  {
+    "id": "top-zara-7",
+    "sortOrder": 34,
+    "name": "Top Zara 7",
+    "folderName": "Top Zara 7",
+    "type": "Top",
+    "brand": "Zara",
+    "size": "S",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-zara-7/01.jpg",
+      "/roupa/top-zara-7/02.jpg",
+      "/roupa/top-zara-7/03.jpg"
+    ]
+  },
+  {
+    "id": "vestido-1",
+    "sortOrder": 35,
+    "name": "Vestido 1",
+    "folderName": "Vestido 1",
+    "type": "Vestido",
+    "brand": "",
+    "size": "",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/vestido-1/01.jpg",
+      "/roupa/vestido-1/02.jpg"
+    ]
+  },
+  {
+    "id": "calcas-bershka-1",
+    "sortOrder": 36,
+    "name": "Calças Bershka 1",
+    "folderName": "Calças Bershka 1",
+    "type": "Calças",
+    "brand": "Bershka",
+    "size": "M",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/calcas-bershka-1/01.jpg",
+      "/roupa/calcas-bershka-1/02.jpg",
+      "/roupa/calcas-bershka-1/03.jpg"
+    ]
+  },
+  {
+    "id": "calcas-bershka-2",
+    "sortOrder": 37,
+    "name": "Calças Bershka 2",
+    "folderName": "Calças Bershka 2",
+    "type": "Calças",
+    "brand": "Bershka",
+    "size": "38",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/calcas-bershka-2/01.jpg",
+      "/roupa/calcas-bershka-2/02.jpg",
+      "/roupa/calcas-bershka-2/03.jpg"
+    ]
+  },
+  {
+    "id": "calcas-stradivarius-2",
+    "sortOrder": 38,
+    "name": "Calças Stradivarius 2",
+    "folderName": "Calças Stradivarius 2",
+    "type": "Calças",
+    "brand": "Stradivarius",
+    "size": "34",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/calcas-stradivarius-2/01.jpg",
+      "/roupa/calcas-stradivarius-2/02.jpg",
+      "/roupa/calcas-stradivarius-2/03.jpg"
+    ]
+  },
+  {
+    "id": "calcoes-denim-e-co-1",
+    "sortOrder": 39,
+    "name": "Calções Denim&Co 1",
+    "folderName": "Calções Denim&Co 1",
+    "type": "Calções",
+    "brand": "Bershka",
+    "size": "13/14",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/calcoes-denim-e-co-1/01.jpg",
+      "/roupa/calcoes-denim-e-co-1/02.jpg",
+      "/roupa/calcoes-denim-e-co-1/03.jpg"
+    ]
+  },
+  {
+    "id": "calcoes-lefties-1",
+    "sortOrder": 40,
+    "name": "Calções Lefties 1",
+    "folderName": "Calções Lefties 1",
+    "type": "Calções",
+    "brand": "Lefties",
+    "size": "36",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/calcoes-lefties-1/01.jpg",
+      "/roupa/calcoes-lefties-1/02.jpg",
+      "/roupa/calcoes-lefties-1/03.jpg"
+    ]
+  },
+  {
+    "id": "calcoes-pull-e-bear-1",
+    "sortOrder": 41,
+    "name": "Calções Pull&Bear 1",
+    "folderName": "Calções Pull&Bear 1",
+    "type": "Calções",
+    "brand": "Bershka",
+    "size": "34",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/calcoes-pull-e-bear-1/01.jpg",
+      "/roupa/calcoes-pull-e-bear-1/02.jpg",
+      "/roupa/calcoes-pull-e-bear-1/03.jpg"
+    ]
+  },
+  {
+    "id": "calcoes-stradivarius-1",
+    "sortOrder": 42,
+    "name": "Calções Stradivarius 1",
+    "folderName": "Calções Stradivarius 1",
+    "type": "Calções",
+    "brand": "Bershka",
+    "size": "34",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/calcoes-stradivarius-1/01.jpg",
+      "/roupa/calcoes-stradivarius-1/02.jpg",
+      "/roupa/calcoes-stradivarius-1/03.jpg"
+    ]
+  },
+  {
+    "id": "casaco-pull-e-bear-1",
+    "sortOrder": 43,
+    "name": "Casaco Pull&Bear 1",
+    "folderName": "Casaco Pull&Bear 1",
+    "type": "Casaco",
+    "brand": "Pull&Bear",
+    "size": "M",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/casaco-pull-e-bear-1/01.jpg",
+      "/roupa/casaco-pull-e-bear-1/02.jpg",
+      "/roupa/casaco-pull-e-bear-1/03.jpg"
+    ]
+  },
+  {
+    "id": "mala-pull-e-bear-1",
+    "sortOrder": 44,
+    "name": "Mala Pull&Bear 1",
+    "folderName": "Mala Pull&Bear 1",
+    "type": "Mala",
+    "brand": "Pull&Bear",
+    "size": "",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/mala-pull-e-bear-1/01.jpg",
+      "/roupa/mala-pull-e-bear-1/02.jpg"
+    ]
+  },
+  {
+    "id": "mala-stradivarius-1",
+    "sortOrder": 45,
+    "name": "Mala Stradivarius 1",
+    "folderName": "Mala Stradivarius 1",
+    "type": "Mala",
+    "brand": "Stradivarius",
+    "size": "",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/mala-stradivarius-1/01.jpg",
+      "/roupa/mala-stradivarius-1/02.jpg"
+    ]
+  },
+  {
+    "id": "top-shein-3",
+    "sortOrder": 46,
+    "name": "Top Shein 3",
+    "folderName": "Top Shein 3",
+    "type": "Top",
+    "brand": "Shein",
+    "size": "M",
+    "price": "",
+    "condition": "Bom/Usado",
+    "photos": [
+      "/roupa/top-shein-3/01.jpg",
+      "/roupa/top-shein-3/02.jpg"
+    ]
+  }
+]

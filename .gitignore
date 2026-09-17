@@ -40,19 +40,27 @@ yarn-error.log*
 
 # typescript
 next-env.d.ts
+*.tsbuildinfo
 /dist/
 /build/
 /.wrangler/
 /outputs/
+/output/
 /work/
 **/dist/
 **/build/
 **/.sites-runtime/
 **/outputs/
+**/output/
 **/work/
+
+# Sexta 50 keeps a source Vite plugin in a directory named `build`.
+!Projetos Pessoais/Sexta 50/build/
+!Projetos Pessoais/Sexta 50/build/sites-vite-plugin.ts
 
 # nested project workspaces and generated files
 **/node_modules/
+**/.npm-cache/
 **/.next/
 **/.vinext/
 **/.wrangler/
@@ -61,3 +69,10 @@ next-env.d.ts
 **/__pycache__/
 **/.pytest_cache/
 **/*.py[cod]
+
+# Swift and Xcode
+**/.build/
+**/.swiftpm/
+**/DerivedData/
+**/xcuserdata/
+**/*.xcuserstate
